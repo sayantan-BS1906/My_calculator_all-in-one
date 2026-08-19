@@ -4,88 +4,185 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>All-in-One Advanced Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --primary-light: #e0e7ff;
+    --bg-surface: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --radius-lg: 24px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --shadow-card: 0 25px 60px -15px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+  }
+
+  * { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+  }
 
   body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: radial-gradient(circle at 15% 15%, #818cf8 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, #c084fc 0%, transparent 40%),
+                linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 24px 16px;
+    color: var(--text-main);
   }
 
   .calculator {
-    background: rgba(255, 255, 255, 0.97);
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    padding: 24px;
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    padding: 28px 24px;
     width: 100%;
     max-width: 440px;
+    overflow: hidden;
+    transition: transform 0.2s ease;
   }
 
-  h1 {
+  .header {
     text-align: center;
-    font-size: 1.3rem;
-    color: #333;
-    margin-bottom: 14px;
+    margin-bottom: 20px;
   }
 
+  .header h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  /* Segmented Nav Bar */
   .modes {
     display: flex;
-    gap: 6px;
-    margin-bottom: 14px;
-    flex-wrap: wrap;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: var(--radius-md);
+    gap: 4px;
+    margin-bottom: 20px;
   }
 
   .mode-btn {
     flex: 1;
-    min-width: 65px;
+    min-width: 0;
     padding: 8px 4px;
     border: none;
-    border-radius: 8px;
-    background: #eee;
-    color: #333;
-    font-size: 0.75rem;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.76rem;
     font-weight: 600;
     cursor: pointer;
-    transition: 0.2s;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
   }
 
-  .mode-btn.active { background: #667eea; color: white; }
+  .mode-btn:hover {
+    color: var(--text-main);
+  }
+
+  .mode-btn.active {
+    background: #ffffff;
+    color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Digital Display Screen */
+  .display-wrapper {
+    margin-bottom: 18px;
+  }
 
   .display {
-    background: #1e1e2f;
-    color: #fff;
-    border-radius: 12px;
-    padding: 18px;
-    margin-bottom: 14px;
-    text-align: right;
+    background: #090d16;
+    color: #f8fafc;
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    min-height: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.06);
   }
 
-  #expression { font-size: 0.9rem; color: #aaa; min-height: 18px; word-break: break-all; }
-  #result { font-size: 2rem; font-weight: bold; word-break: break-all; }
+  #expression {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    min-height: 20px;
+    text-align: right;
+    word-break: break-all;
+  }
+
+  #result {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.85rem;
+    font-weight: 700;
+    text-align: right;
+    word-break: break-all;
+    letter-spacing: -0.02em;
+    color: #38bdf8;
+  }
+
+  .result-banner {
+    background: #090d16;
+    color: #38bdf8;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 14px 18px;
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-top: 14px;
+    border: 1px solid rgba(255,255,255,0.06);
+    word-break: break-word;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 
   .angle-toggle {
     display: flex;
     gap: 6px;
-    margin-bottom: 10px;
+    margin-top: 8px;
     justify-content: flex-end;
   }
 
   .angle-toggle button {
     padding: 4px 10px;
-    font-size: 0.7rem;
-    border: 1px solid #ccc;
-    background: #f5f5f5;
+    font-size: 0.68rem;
+    font-weight: 600;
+    border: 1px solid var(--border-color);
+    background: #ffffff;
+    color: var(--text-muted);
     border-radius: 6px;
     cursor: pointer;
+    transition: 0.15s;
   }
 
-  .angle-toggle button.active { background: #333; color: white; }
+  .angle-toggle button.active {
+    background: #0f172a;
+    color: #ffffff;
+    border-color: #0f172a;
+  }
 
+  /* Keypads */
   .grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -93,93 +190,226 @@
   }
 
   .grid button {
-    padding: 14px 0;
+    font-family: inherit;
+    padding: 13px 0;
     border: none;
-    border-radius: 10px;
-    font-size: 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.08s, filter 0.15s;
+    transition: all 0.1s ease;
+    user-select: none;
   }
 
-  .grid button:active { transform: scale(0.94); }
+  .grid button:active {
+    transform: scale(0.95);
+  }
 
-  .num { background: #f1f1f4; color: #222; }
-  .op { background: #a78bfa; color: white; }
-  .sci { background: #60a5fa; color: white; font-size: 0.8rem; }
-  .comm { background: #f87171; color: white; font-size: 0.75rem; }
-  .calc { background: #34d399; color: white; font-size: 0.75rem; }
-  .eq { background: #22c55e; color: white; }
-  .clear { background: #ef4444; color: white; }
-  .del { background: #f97316; color: white; }
-  .paren { background: #fbbf24; color: #222; }
-  .mem { background: #94a3b8; color: white; font-size: 0.75rem; }
+  .num { background: #f8fafc; color: #1e293b; border: 1px solid #e2e8f0; }
+  .num:hover { background: #f1f5f9; }
+  .op { background: #eff6ff; color: #3b82f6; }
+  .op:hover { background: #dbeafe; }
+  .sci { background: #f5f3ff; color: #7c3aed; font-size: 0.82rem; }
+  .sci:hover { background: #ede9fe; }
+  .eq { background: #10b981; color: white; }
+  .eq:hover { background: #059669; }
+  .clear { background: #fee2e2; color: #ef4444; }
+  .clear:hover { background: #fecaca; }
+  .del { background: #ffedd5; color: #f97316; }
+  .del:hover { background: #fed7aa; }
+  .paren { background: #f1f5f9; color: #475569; }
+  .mem { background: #f1f5f9; color: #64748b; font-size: 0.75rem; }
 
-  .grid button:hover { filter: brightness(1.08); }
-
+  /* Panels */
   .panel { display: none; }
-  .panel.active { display: block; }
+  .panel.active { display: block; animation: fadeIn 0.2s ease; }
 
-  .commercial-form, .calculus-form, .vector-form {
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Form & Interactive Elements */
+  .form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  select.custom-select {
+    width: 100%;
+    padding: 11px 14px;
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--border-color);
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-main);
+    background: #ffffff;
+    outline: none;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  select.custom-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+  }
+
+  .input-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }
+
+  .input-field {
+    width: 100%;
+    min-width: 0;
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border-color);
+    font-size: 0.9rem;
+    font-family: inherit;
+    outline: none;
+    transition: 0.2s;
+    background: #f8fafc;
+  }
+
+  .input-field:focus {
+    border-color: var(--primary);
+    background: #ffffff;
+    box-shadow: 0 0 0 3px var(--primary-light);
+  }
+
+  .action-btn-primary {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--primary);
+    color: #ffffff;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 4px;
+  }
+
+  .action-btn-primary:hover {
+    background: var(--primary-hover);
+  }
+
+  .action-btn-primary:active {
+    transform: scale(0.98);
+  }
+
+  /* Vector Input Group & Action Grid */
+  .vector-group {
+    background: #f8fafc;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 12px;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-bottom: 10px;
   }
 
-  .commercial-form input, .calculus-form input, .vector-form input, .commercial-form select, .calculus-form select {
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    font-size: 0.9rem;
-  }
-
-  .commercial-form button, .calculus-form button, .vector-grid-actions button {
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    background: #667eea;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: filter 0.15s;
-  }
-
-  .vector-grid-actions button:hover, .commercial-form button:hover, .calculus-form button:hover {
-    filter: brightness(1.08);
-  }
-
-  .commercial-form label, .calculus-form label, .vector-form label {
+  .vector-group-title {
     font-size: 0.8rem;
-    color: #555;
-    margin-bottom: -4px;
+    font-weight: 700;
+    color: var(--text-main);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
-  .vector-row {
+  .vector-inputs-row {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-  }
-
-  .vector-grid-actions {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 8px;
-    margin-top: 6px;
+  }
+
+  .vector-input-box {
+    position: relative;
+    min-width: 0;
+  }
+
+  .vector-input-box input {
+    width: 100%;
+    min-width: 0;
+    padding: 10px 10px 10px 24px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border-color);
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: #ffffff;
+    outline: none;
+    box-sizing: border-box;
+    transition: 0.2s;
+  }
+
+  .vector-input-box input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+  }
+
+  .vector-input-box span {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+
+  .vector-actions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .vector-actions-grid button {
+    padding: 11px 8px;
+    border: 1.5px solid #e0e7ff;
+    border-radius: var(--radius-sm);
+    background: #eef2ff;
+    color: var(--primary);
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .vector-actions-grid button:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #ffffff;
+  }
+
+  .vector-actions-grid button:active {
+    transform: scale(0.96);
   }
 
   footer {
     text-align: center;
-    margin-top: 14px;
-    font-size: 0.7rem;
-    color: #888;
+    margin-top: 18px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
   }
 </style>
 </head>
 <body>
 
 <div class="calculator">
-  <h1>🧮 All-in-One Advanced Calculator</h1>
+  <div class="header">
+    <h1>🧮 All-in-One Calculator</h1>
+  </div>
 
   <div class="modes">
     <button class="mode-btn active" data-mode="basic">Basic</button>
@@ -189,8 +419,8 @@
     <button class="mode-btn" data-mode="vector">Vector</button>
   </div>
 
-  <!-- BASIC + SCIENTIFIC share the same display -->
-  <div id="calc-display-wrapper">
+  <!-- BASIC + SCIENTIFIC DISPLAY -->
+  <div id="calc-display-wrapper" class="display-wrapper">
     <div class="display">
       <div id="expression"></div>
       <div id="result">0</div>
@@ -297,59 +527,67 @@
 
   <!-- COMMERCIAL MODE -->
   <div class="panel" id="panel-commercial">
-    <select id="commercialType" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;">
-      <option value="discount">Discount Calculator</option>
-      <option value="profitloss">Profit / Loss Analyzer</option>
-      <option value="interest">Interest Calculator</option>
-      <option value="markup">Mark-up Calculator</option>
-      <option value="pctchange">Percentage Change</option>
-    </select>
-    <div class="commercial-form" id="commercialForm"></div>
-    <div class="display"><div id="commercialResult">Result: —</div></div>
+    <div class="form-container">
+      <select id="commercialType" class="custom-select">
+        <option value="discount">🏷️ Discount Calculator</option>
+        <option value="profitloss">📈 Profit / Loss Analyzer</option>
+        <option value="interest">🏦 Interest Calculator</option>
+        <option value="markup">📊 Mark-up Calculator</option>
+        <option value="pctchange">📉 Percentage Change</option>
+      </select>
+      <div id="commercialForm" class="form-container"></div>
+    </div>
+    <div class="result-banner" id="commercialResult">Result: —</div>
   </div>
 
   <!-- CALCULUS MODE -->
   <div class="panel" id="panel-calculus">
-    <select id="calculusType" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;">
-      <option value="integral">Numerical Integration (Trapezoidal)</option>
-      <option value="simpson">Simpson's Rule</option>
-      <option value="derivative">Numerical Derivative</option>
-      <option value="series">Series Summation (∑)</option>
-    </select>
-    <div class="calculus-form" id="calculusForm"></div>
-    <div class="display"><div id="calculusResult">Result: —</div></div>
+    <div class="form-container">
+      <select id="calculusType" class="custom-select">
+        <option value="integral">∫ Numerical Integration (Trapezoidal)</option>
+        <option value="simpson">∫ Simpson's 1/3rd Rule</option>
+        <option value="derivative">d/dx Numerical Derivative</option>
+        <option value="series">∑ Series Summation</option>
+      </select>
+      <div id="calculusForm" class="form-container"></div>
+    </div>
+    <div class="result-banner" id="calculusResult">Result: —</div>
   </div>
 
   <!-- VECTOR MODE -->
   <div class="panel" id="panel-vector">
-    <div class="vector-form">
-      <label>Vector A (x, y, z)</label>
-      <div class="vector-row">
-        <input type="number" id="vAx" placeholder="Ax" value="1" step="any">
-        <input type="number" id="vAy" placeholder="Ay" value="2" step="any">
-        <input type="number" id="vAz" placeholder="Az" value="3" step="any">
+    <div class="form-container">
+      <div class="vector-group">
+        <div class="vector-group-title">Vector A</div>
+        <div class="vector-inputs-row">
+          <div class="vector-input-box"><span>x</span><input type="number" id="vAx" value="1" step="any"></div>
+          <div class="vector-input-box"><span>y</span><input type="number" id="vAy" value="2" step="any"></div>
+          <div class="vector-input-box"><span>z</span><input type="number" id="vAz" value="3" step="any"></div>
+        </div>
       </div>
 
-      <label style="margin-top:6px;">Vector B (x, y, z)</label>
-      <div class="vector-row">
-        <input type="number" id="vBx" placeholder="Bx" value="4" step="any">
-        <input type="number" id="vBy" placeholder="By" value="5" step="any">
-        <input type="number" id="vBz" placeholder="Bz" value="6" step="any">
+      <div class="vector-group">
+        <div class="vector-group-title">Vector B</div>
+        <div class="vector-inputs-row">
+          <div class="vector-input-box"><span>x</span><input type="number" id="vBx" value="4" step="any"></div>
+          <div class="vector-input-box"><span>y</span><input type="number" id="vBy" value="5" step="any"></div>
+          <div class="vector-input-box"><span>z</span><input type="number" id="vBz" value="6" step="any"></div>
+        </div>
       </div>
 
-      <div class="vector-grid-actions">
+      <div class="vector-actions-grid">
         <button onclick="calculateVector('add')">A + B</button>
         <button onclick="calculateVector('subtract')">A − B</button>
-        <button onclick="calculateVector('dot')">Dot Product (A · B)</button>
-        <button onclick="calculateVector('cross')">Cross Product (A × B)</button>
+        <button onclick="calculateVector('dot')">Dot (A · B)</button>
+        <button onclick="calculateVector('cross')">Cross (A × B)</button>
         <button onclick="calculateVector('magnitude')">Magnitude (|A|, |B|)</button>
-        <button onclick="calculateVector('angle')">Angle Between (θ)</button>
+        <button onclick="calculateVector('angle')">Angle (θ)</button>
       </div>
     </div>
-    <div class="display"><div id="vectorResult">Result: —</div></div>
+    <div class="result-banner" id="vectorResult">Result: —</div>
   </div>
 
-  <footer>All-in-One Calculator · Runs entirely in your browser</footer>
+  <footer>All-in-One Calculator · Runs locally in browser</footer>
 </div>
 
 <script>
@@ -410,7 +648,7 @@ function factorial(n) {
 function safeEvaluate(rawExpr) {
   let e = rawExpr
     .replace(/\^/g, '**')
-    .replace(/pi/g, 'Math.PI')
+    .replace(/\bpi\b/gi, 'Math.PI')
     .replace(/(?<![a-zA-Z])e(?![a-zA-Z(])/g, 'Math.E')
     .replace(/sqrt\(/g, 'Math.sqrt(')
     .replace(/cbrt\(/g, 'Math.cbrt(')
@@ -437,7 +675,6 @@ function safeEvaluate(rawExpr) {
   const __atan = x => angleMode === 'DEG' ? Math.atan(x) * 180 / Math.PI : angleMode === 'GRAD' ? Math.atan(x) * 200 / Math.PI : Math.atan(x);
   const __fact = factorial;
 
-  // eslint-disable-next-line no-new-func
   return Function('__sin','__cos','__tan','__asin','__acos','__atan','__fact',
     `"use strict"; return (${e});`)(__sin, __cos, __tan, __asin, __acos, __atan, __fact);
 }
@@ -487,40 +724,41 @@ document.querySelectorAll('#panel-basic .grid button, #panel-scientific .grid bu
 /* ---------- COMMERCIAL MODE ---------- */
 const commercialForms = {
   discount: {
-    fields: [['Price', 'price'], ['Discount %', 'discount']],
+    fields: [['Original Price ($)', 'price'], ['Discount Rate (%)', 'discount']],
     calc: v => {
-      const final = v.price - (v.price * v.discount / 100);
-      return `Discount Amount: ${(v.price - final).toFixed(2)} | Final Price: ${final.toFixed(2)}`;
+      const saved = (v.price * v.discount / 100);
+      const final = v.price - saved;
+      return `Saved: ${saved.toFixed(2)} | Final: ${final.toFixed(2)}`;
     }
   },
   profitloss: {
-    fields: [['Cost Price', 'cost'], ['Selling Price', 'selling']],
+    fields: [['Cost Price ($)', 'cost'], ['Selling Price ($)', 'selling']],
     calc: v => {
       const diff = v.selling - v.cost;
       const pct = (diff / v.cost) * 100;
       return diff >= 0
-        ? `Profit: ${diff.toFixed(2)} (${pct.toFixed(2)}%)`
-        : `Loss: ${Math.abs(diff).toFixed(2)} (${pct.toFixed(2)}%)`;
+        ? `Profit: +${diff.toFixed(2)} (+${pct.toFixed(2)}%)`
+        : `Loss: -${Math.abs(diff).toFixed(2)} (-${Math.abs(pct).toFixed(2)}%)`;
     }
   },
   interest: {
-    fields: [['Principal', 'p'], ['Rate %', 'r'], ['Time (years)', 't'], ['Compound Frequency (0 = simple)', 'n']],
+    fields: [['Principal ($)', 'p'], ['Annual Rate (%)', 'r'], ['Time (Years)', 't'], ['Compound Freq. / Year (0 = Simple)', 'n']],
     calc: v => {
       const si = (v.p * v.r * v.t) / 100;
-      if (!v.n || v.n === 0) return `Simple Interest: ${si.toFixed(2)} | Total: ${(v.p + si).toFixed(2)}`;
+      if (!v.n || v.n === 0) return `Interest: ${si.toFixed(2)} | Total: ${(v.p + si).toFixed(2)}`;
       const amount = v.p * Math.pow(1 + v.r / (100 * v.n), v.n * v.t);
-      return `Compound Interest: ${(amount - v.p).toFixed(2)} | Total: ${amount.toFixed(2)}`;
+      return `Interest: ${(amount - v.p).toFixed(2)} | Total: ${amount.toFixed(2)}`;
     }
   },
   markup: {
-    fields: [['Cost', 'cost'], ['Mark-up %', 'markup']],
+    fields: [['Base Cost ($)', 'cost'], ['Mark-up Percentage (%)', 'markup']],
     calc: v => `Selling Price: ${(v.cost + (v.cost * v.markup / 100)).toFixed(2)}`
   },
   pctchange: {
-    fields: [['Old Value', 'oldv'], ['New Value', 'newv']],
+    fields: [['Original Value', 'oldv'], ['New Value', 'newv']],
     calc: v => {
       const pct = ((v.newv - v.oldv) / v.oldv) * 100;
-      return `${pct >= 0 ? 'Increase' : 'Decrease'}: ${Math.abs(pct).toFixed(2)}%`;
+      return `Change: ${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`;
     }
   }
 };
@@ -530,8 +768,8 @@ function renderCommercialForm() {
   const form = document.getElementById('commercialForm');
   const cfg = commercialForms[type];
   form.innerHTML = cfg.fields.map(([label, id]) =>
-    `<label>${label}</label><input type="number" step="any" id="c_${id}" placeholder="${label}">`
-  ).join('') + `<button id="commercialCalc">Calculate</button>`;
+    `<div><div class="input-label">${label}</div><input class="input-field" type="number" step="any" id="c_${id}" placeholder="Enter ${label.toLowerCase()}"></div>`
+  ).join('') + `<button class="action-btn-primary" id="commercialCalc">Calculate</button>`;
 
   document.getElementById('commercialCalc').addEventListener('click', () => {
     const values = {};
@@ -539,15 +777,15 @@ function renderCommercialForm() {
     cfg.fields.forEach(([, id]) => {
       const raw = document.getElementById(`c_${id}`).value;
       values[id] = parseFloat(raw);
-      if (raw !== '' && isNaN(values[id])) ok = false;
+      if (raw === '' || isNaN(values[id])) ok = false;
     });
-    document.getElementById('commercialResult').textContent = ok ? cfg.calc(values) : 'Enter valid numbers';
+    document.getElementById('commercialResult').textContent = ok ? cfg.calc(values) : 'Please fill all fields';
   });
 }
 document.getElementById('commercialType').addEventListener('change', renderCommercialForm);
 renderCommercialForm();
 
-/* ---------- CALCULUS MODE (FIXED EXP / LOG / TRIG PARSING) ---------- */
+/* ---------- CALCULUS MODE ---------- */
 function parseFn(fnStr) {
   let cleaned = fnStr
     .replace(/\^/g, '**')
@@ -569,15 +807,12 @@ function parseFn(fnStr) {
     .replace(/\bcosh\(/gi, 'Math.cosh(')
     .replace(/\btanh\(/gi, 'Math.tanh(');
 
-  return (x) => {
-    // eslint-disable-next-line no-new-func
-    return Function('x', `"use strict"; return (${cleaned});`)(x);
-  };
+  return (x) => Function('x', `"use strict"; return (${cleaned});`)(x);
 }
 
 const calculusForms = {
   integral: {
-    fields: [['f(x) — e.g. exp(x), log(x), x^2', 'fn', 'text'], ['a', 'a', 'number'], ['b', 'b', 'number'], ['Intervals (n)', 'n', 'number']],
+    fields: [['Function f(x) — e.g. exp(x), log(x), x^2', 'fn', 'text'], ['Lower Bound (a)', 'a', 'number'], ['Upper Bound (b)', 'b', 'number'], ['Intervals (n)', 'n', 'number']],
     calc: v => {
       const f = parseFn(v.fn);
       const n = v.n || 1000;
@@ -588,7 +823,7 @@ const calculusForms = {
     }
   },
   simpson: {
-    fields: [['f(x) — e.g. exp(x), log(x), x^2', 'fn', 'text'], ['a', 'a', 'number'], ['b', 'b', 'number'], ['Intervals (even n)', 'n', 'number']],
+    fields: [['Function f(x) — e.g. sin(x), x^3', 'fn', 'text'], ['Lower Bound (a)', 'a', 'number'], ['Upper Bound (b)', 'b', 'number'], ['Intervals (even n)', 'n', 'number']],
     calc: v => {
       const f = parseFn(v.fn);
       let n = v.n || 100;
@@ -600,16 +835,16 @@ const calculusForms = {
     }
   },
   derivative: {
-    fields: [['f(x) — e.g. exp(x), log(x), x^3', 'fn', 'text'], ['Point x', 'x', 'number'], ['h (small step)', 'h', 'number']],
+    fields: [['Function f(x) — e.g. exp(x) + x^2', 'fn', 'text'], ['Evaluation Point (x)', 'x', 'number'], ['Step Size (h)', 'h', 'number']],
     calc: v => {
       const f = parseFn(v.fn);
       const h = v.h || 0.0001;
       const d = (f(v.x + h) - f(v.x - h)) / (2 * h);
-      return `f'(x) ≈ ${d.toFixed(6)}`;
+      return `f'(${v.x}) ≈ ${d.toFixed(6)}`;
     }
   },
   series: {
-    fields: [['Expression in i — e.g. exp(i), i^2', 'fn', 'text'], ['Start', 'start', 'number'], ['End', 'end', 'number']],
+    fields: [['Expression in i — e.g. 1/(i^2)', 'fn', 'text'], ['Start Index (i)', 'start', 'number'], ['End Index (i)', 'end', 'number']],
     calc: v => {
       let cleaned = v.fn
         .replace(/\^/g, '**')
@@ -633,8 +868,8 @@ function renderCalculusForm() {
   const form = document.getElementById('calculusForm');
   const cfg = calculusForms[type];
   form.innerHTML = cfg.fields.map(([label, id, inputType]) =>
-    `<label>${label}</label><input type="${inputType}" ${inputType==='number' ? 'step="any"' : ''} id="k_${id}" placeholder="${label}">`
-  ).join('') + `<button id="calculusCalc">Calculate</button>`;
+    `<div><div class="input-label">${label}</div><input class="input-field" type="${inputType}" ${inputType==='number' ? 'step="any"' : ''} id="k_${id}" placeholder="${label}"></div>`
+  ).join('') + `<button class="action-btn-primary" id="calculusCalc">Compute Result</button>`;
 
   document.getElementById('calculusCalc').addEventListener('click', () => {
     const values = {};
@@ -645,7 +880,7 @@ function renderCalculusForm() {
     try {
       document.getElementById('calculusResult').textContent = cfg.calc(values);
     } catch {
-      document.getElementById('calculusResult').textContent = 'Error in expression';
+      document.getElementById('calculusResult').textContent = 'Error in expression syntax';
     }
   });
 }
@@ -666,35 +901,35 @@ function calculateVector(operation) {
 
   switch (operation) {
     case 'add': {
-      const rx = +(ax + bx).toFixed(6);
-      const ry = +(ay + by).toFixed(6);
-      const rz = +(az + bz).toFixed(6);
-      resultDiv.innerHTML = `A + B = (${rx}, ${ry}, ${rz})`;
+      const rx = +(ax + bx).toFixed(4);
+      const ry = +(ay + by).toFixed(4);
+      const rz = +(az + bz).toFixed(4);
+      resultDiv.textContent = `A + B = (${rx}, ${ry}, ${rz})`;
       break;
     }
     case 'subtract': {
-      const rx = +(ax - bx).toFixed(6);
-      const ry = +(ay - by).toFixed(6);
-      const rz = +(az - bz).toFixed(6);
-      resultDiv.innerHTML = `A − B = (${rx}, ${ry}, ${rz})`;
+      const rx = +(ax - bx).toFixed(4);
+      const ry = +(ay - by).toFixed(4);
+      const rz = +(az - bz).toFixed(4);
+      resultDiv.textContent = `A − B = (${rx}, ${ry}, ${rz})`;
       break;
     }
     case 'dot': {
-      const dot = +(ax * bx + ay * by + az * bz).toFixed(6);
-      resultDiv.innerHTML = `A · B = ${dot}`;
+      const dot = +(ax * bx + ay * by + az * bz).toFixed(4);
+      resultDiv.textContent = `A · B = ${dot}`;
       break;
     }
     case 'cross': {
-      const cx = +(ay * bz - az * by).toFixed(6);
-      const cy = +(az * bx - ax * bz).toFixed(6);
-      const cz = +(ax * by - ay * bx).toFixed(6);
-      resultDiv.innerHTML = `A × B = (${cx}, ${cy}, ${cz})`;
+      const cx = +(ay * bz - az * by).toFixed(4);
+      const cy = +(az * bx - ax * bz).toFixed(4);
+      const cz = +(ax * by - ay * bx).toFixed(4);
+      resultDiv.textContent = `A × B = (${cx}, ${cy}, ${cz})`;
       break;
     }
     case 'magnitude': {
-      const magA = Math.sqrt(ax * ax + ay * ay + az * az).toFixed(6);
-      const magB = Math.sqrt(bx * bx + by * by + bz * bz).toFixed(6);
-      resultDiv.innerHTML = `|A| = ${+magA} | |B| = ${+magB}`;
+      const magA = Math.sqrt(ax * ax + ay * ay + az * az).toFixed(4);
+      const magB = Math.sqrt(bx * bx + by * by + bz * bz).toFixed(4);
+      resultDiv.textContent = `|A| = ${+magA}  |  |B| = ${+magB}`;
       break;
     }
     case 'angle': {
@@ -702,12 +937,12 @@ function calculateVector(operation) {
       const magA = Math.sqrt(ax * ax + ay * ay + az * az);
       const magB = Math.sqrt(bx * bx + by * by + bz * bz);
       if (magA === 0 || magB === 0) {
-        resultDiv.innerHTML = 'Angle: Undefined (zero vector)';
+        resultDiv.textContent = 'Angle: Undefined (zero vector)';
       } else {
         const cosTheta = Math.max(-1, Math.min(1, dot / (magA * magB)));
         const rad = Math.acos(cosTheta);
-        const deg = ((rad * 180) / Math.PI).toFixed(4);
-        resultDiv.innerHTML = `θ = ${+deg}° (${+rad.toFixed(6)} rad)`;
+        const deg = ((rad * 180) / Math.PI).toFixed(2);
+        resultDiv.textContent = `θ = ${+deg}° (${+rad.toFixed(4)} rad)`;
       }
       break;
     }
