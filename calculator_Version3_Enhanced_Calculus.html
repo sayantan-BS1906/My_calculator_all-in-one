@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Scientific & Commercial Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 10px;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .calculator {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .calculator-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .display {
+            background: #2d3436;
+            color: #00ff88;
+            font-size: 2em;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: right;
+            margin-bottom: 20px;
+            min-height: 80px;
+            word-wrap: break-word;
+            word-break: break-all;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            overflow-y: auto;
+            max-height: 100px;
+        }
+
+        .mode-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .mode-tab {
+            flex: 1;
+            min-width: 80px;
+            padding: 10px;
+            background: #ecf0f1;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .mode-tab.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .mode-tab:hover {
+            transform: translateY(-2px);
+        }
+
+        .buttons-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .scientific-buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .commercial-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .calculus-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        button {
+            padding: 12px;
+            font-size: 0.85em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .number {
+            background: #ecf0f1;
+            color: #2d3436;
+        }
+
+        .number:hover {
+            background: #d5dbdb;
+        }
+
+        .operator {
+            background: #667eea;
+            color: white;
+        }
+
+        .operator:hover {
+            background: #5568d3;
+        }
+
+        .scientific {
+            background: #3498db;
+            color: white;
+            font-size: 0.75em;
+        }
+
+        .scientific:hover {
+            background: #2980b9;
+        }
+
+        .commercial {
+            background: #e74c3c;
+            color: white;
+            font-size: 0.75em;
+        }
+
+        .commercial:hover {
+            background: #c0392b;
+        }
+
+        .calculus {
+            background: #16a085;
+            color: white;
+            font-size: 0.75em;
+        }
+
+        .calculus:hover {
+            background: #117a65;
+        }
+
+        .equals {
+            background: #00ff88;
+            color: #2d3436;
+            grid-column: span 2;
+        }
+
+        .equals:hover {
+            background: #00dd6f;
+        }
+
+        .clear {
+            background: #ff6b6b;
+            color: white;
+            grid-column: span 2;
+        }
+
+        .clear:hover {
+            background: #ee5a52;
+        }
+
+        .delete {
+            background: #ffa502;
+            color: white;
+        }
+
+        .delete:hover {
+            background: #ff8c00;
+        }
+
+        .mode-section {
+            display: none;
+        }
+
+        .mode-section.active {
+            display: block;
+        }
+
+        .memory-display {
+            background: #ecf0f1;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            min-height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .memory-display span {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .angle-mode {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .angle-mode button {
+            flex: 1;
+            padding: 8px;
+            font-size: 0.85em;
+        }
+
+        .angle-mode button.active {
+            background: #667eea;
+            color: white;
+        }
+
+
+        .function-box { background: linear-gradient(135deg, #eefcf8, #f8fffd); border: 2px solid #16a085; border-radius: 12px; padding: 14px; margin-bottom: 14px; box-shadow: 0 4px 12px rgba(22,160,133,.10); }
+        .function-box-header { color:#117a65; font-size:1.05em; font-weight:800; margin-bottom:4px; }
+        .function-box-subtitle { color:#68737a; font-size:.78em; margin-bottom:10px; }
+        .function-input-row { display:flex; gap:7px; align-items:center; }
+        .function-label { font-size:1.05em; font-weight:800; color:#117a65; white-space:nowrap; }
+        .function-input { flex:1; min-width:0; padding:11px 10px; border:2px solid #9edbcc; border-radius:8px; font-family:'Courier New',monospace; font-size:.95em; outline:none; background:white; }
+        .function-input:focus { border-color:#16a085; box-shadow:0 0 0 3px rgba(22,160,133,.12); }
+        .function-use-btn { padding:11px 12px !important; white-space:nowrap; }
+        .function-examples { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+        .function-examples button { padding:6px 9px; font-size:.72em; background:#fff; color:#117a65; border:1px solid #9edbcc; border-radius:6px; }
+        .function-examples button:hover { background:#e7f8f3; transform:none; box-shadow:none; }
+        @media(max-width:520px){ .function-input-row{flex-wrap:wrap}.function-input{flex-basis:70%}.function-use-btn{flex:1} }
+
+        .integration-panel {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 5px solid #16a085;
+        }
+
+        .integration-panel h4 {
+            color: #16a085;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .integration-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .integration-inputs input {
+            padding: 8px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .commercial-panel {
+            background: #fef5f1;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 5px solid #e74c3c;
+        }
+
+        .commercial-panel h4 {
+            color: #e74c3c;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .commercial-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .commercial-inputs input {
+            padding: 8px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .footer-info {
+            margin-top: 10px;
+            font-size: 0.8em;
+            color: #666;
+            text-align: center;
+            border-top: 1px solid #ecf0f1;
+            padding-top: 10px;
+        }
+
+        .result-box {
+            background: #d5f4e6;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #16a085;
+            text-align: center;
+        }
+
+        .calc-op-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .calc-op-btn {
+            flex: 1;
+            padding: 8px;
+            font-size: 0.8em;
+            background: #ecf0f1;
+            border: 2px solid #16a085;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #16a085;
+            transition: all 0.3s ease;
+        }
+
+        .calc-op-btn.active {
+            background: #16a085;
+            color: white;
+        }
+
+        .vector-panel {
+            background: #f5eef8;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 5px solid #8e44ad;
+        }
+
+        .vector-panel h4 {
+            color: #8e44ad;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .vector-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .vector {
+            background: #8e44ad;
+            color: white;
+            font-size: 0.8em;
+        }
+
+        .vector:hover {
+            background: #6c3483;
+        }
+
+        /* Enhanced Calculus UI */
+        .calculus-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .calculus-card {
+            background: linear-gradient(135deg, #ecfdf5, #f0fdfa);
+            border: 1px solid #a7f3d0;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .calculus-card h5 {
+            color: #0e6655;
+            margin-bottom: 5px;
+            font-size: 0.82em;
+        }
+        .calculus-card p {
+            color: #52706a;
+            font-size: 0.72em;
+            line-height: 1.35;
+        }
+        .calc-advanced-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 7px;
+            margin-top: 10px;
+        }
+        .calc-advanced-grid button {
+            font-size: 0.72em;
+            padding: 9px 5px;
+        }
+        .calc-history {
+            background: #f8fafc;
+            border: 1px solid #dfe6e9;
+            border-radius: 8px;
+            margin-top: 10px;
+            padding: 8px;
+            max-height: 125px;
+            overflow-y: auto;
+            font-size: 0.72em;
+        }
+        .calc-history strong { color: #0e6655; }
+        .calc-history-item {
+            padding: 4px 2px;
+            border-bottom: 1px solid #e8ecef;
+        }
+        .calc-history-item:last-child { border-bottom: none; }
+        .formula-hint {
+            margin-top: 8px;
+            padding: 8px;
+            background: #e8f8f5;
+            border-radius: 7px;
+            color: #23665a;
+            font-size: 0.72em;
+        }
+        .calculus .danger { background: #c0392b !important; }
+        @media (max-width: 520px) {
+            .calculus-dashboard { grid-template-columns: 1fr; }
+            .calc-advanced-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="calculator">
+            <div class="calculator-header">Advanced Scientific & Commercial Calculator</div>
+            
+            <div class="display" id="display">0</div>
+            
+            <!-- Mode Tabs -->
+            <div class="mode-tabs">
+                <div class="mode-tab active" onclick="switchMode('basic')">Basic</div>
+                <div class="mode-tab" onclick="switchMode('scientific')">Scientific</div>
+                <div class="mode-tab" onclick="switchMode('commercial')">Commercial</div>
+                <div class="mode-tab" onclick="switchMode('calculus')">Calculus</div>
+                <div class="mode-tab" onclick="switchMode('vectors')">Vectors</div>
+            </div>
+
+            <!-- Memory Display -->
+            <div class="memory-display">
+                Memory: <span id="memoryValue">0</span>
+                <div>
+                    <button style="padding: 5px 10px; font-size: 0.8em; width: auto;" onclick="memoryClear()">MC</button>
+                    <button style="padding: 5px 10px; font-size: 0.8em; width: auto;" onclick="memoryAdd()">M+</button>
+                    <button style="padding: 5px 10px; font-size: 0.8em; width: auto;" onclick="memorySubtract()">M-</button>
+                    <button style="padding: 5px 10px; font-size: 0.8em; width: auto;" onclick="memoryRecall()">MR</button>
+                </div>
+            </div>
+
+            <!-- SCIENTIFIC MODE -->
+            <div class="mode-section" id="scientificMode">
+                <div class="angle-mode">
+                    <button class="angle-btn active" data-mode="deg" onclick="setAngleMode('deg')">DEG</button>
+                    <button class="angle-btn" data-mode="rad" onclick="setAngleMode('rad')">RAD</button>
+                    <button class="angle-btn" data-mode="grad" onclick="setAngleMode('grad')">GRAD</button>
+                </div>
+
+                <div class="scientific-buttons">
+                    <button class="scientific" onclick="appendFunction('sin(')">sin</button>
+                    <button class="scientific" onclick="appendFunction('cos(')">cos</button>
+                    <button class="scientific" onclick="appendFunction('tan(')">tan</button>
+                    <button class="scientific" onclick="appendFunction('asin(')">asin</button>
+                    <button class="scientific" onclick="appendFunction('acos(')">acos</button>
+                    
+                    <button class="scientific" onclick="appendFunction('atan(')">atan</button>
+                    <button class="scientific" onclick="appendFunction('sinh(')">sinh</button>
+                    <button class="scientific" onclick="appendFunction('cosh(')">cosh</button>
+                    <button class="scientific" onclick="appendFunction('tanh(')">tanh</button>
+                    <button class="scientific" onclick="appendFunction('log(')">log</button>
+                    
+                    <button class="scientific" onclick="appendFunction('ln(')">ln</button>
+                    <button class="scientific" onclick="appendFunction('sqrt(')">√</button>
+                    <button class="scientific" onclick="appendFunction('cbrt(')">∛</button>
+                    <button class="scientific" onclick="appendOperator('^')">x^y</button>
+                    <button class="scientific" onclick="appendFunction('factorial(')">n!</button>
+                    
+                    <button class="scientific" onclick="appendConstant(Math.PI)">π</button>
+                    <button class="scientific" onclick="appendConstant(Math.E)">e</button>
+                    <button class="scientific" onclick="toggleSign()">+/−</button>
+                    <button class="scientific" onclick="appendFunction('abs(')">|x|</button>
+                    <button class="scientific" onclick="appendFunction('exp(')">e^x</button>
+                </div>
+            </div>
+
+            <!-- COMMERCIAL MODE -->
+            <div class="mode-section" id="commercialMode">
+                <div class="commercial-panel">
+                    <h4>💰 Discount Calculator</h4>
+                    <div class="commercial-inputs">
+                        <input type="number" id="originalPrice" placeholder="Original Price" value="100">
+                        <input type="number" id="discountPercent" placeholder="Discount %" value="10">
+                    </div>
+                    <button class="commercial" onclick="calculateDiscount()" style="width: 100%; grid-column: span 2;">Calculate Discount</button>
+                    <div class="result-box" id="discountResult"></div>
+                </div>
+
+                <div class="commercial-panel">
+                    <h4>📊 Profit/Loss Calculator</h4>
+                    <div class="commercial-inputs">
+                        <input type="number" id="costPrice" placeholder="Cost Price" value="100">
+                        <input type="number" id="sellingPrice" placeholder="Selling Price" value="150">
+                    </div>
+                    <button class="commercial" onclick="calculateProfitLoss()" style="width: 100%; grid-column: span 2;">Calculate P/L</button>
+                    <div class="result-box" id="profitLossResult"></div>
+                </div>
+
+                <div class="commercial-panel">
+                    <h4>💳 Interest Calculator (Simple & Compound)</h4>
+                    <div class="commercial-inputs">
+                        <input type="number" id="principal" placeholder="Principal (P)" value="1000">
+                        <input type="number" id="rate" placeholder="Rate (R) %" value="5">
+                        <input type="number" id="time" placeholder="Time (T) years" value="2">
+                        <input type="number" id="frequency" placeholder="Frequency (n)" value="1">
+                    </div>
+                    <button class="commercial" onclick="calculateSimpleInterest()" style="width: 48%; display: inline-block;">Simple</button>
+                    <button class="commercial" onclick="calculateCompoundInterest()" style="width: 48%; display: inline-block; float: right;">Compound</button>
+                    <div class="result-box" id="interestResult"></div>
+                </div>
+
+                <div class="commercial-panel">
+                    <h4>📈 Mark-up Calculator</h4>
+                    <div class="commercial-inputs">
+                        <input type="number" id="costPriceMarkup" placeholder="Cost Price" value="100">
+                        <input type="number" id="markupPercent" placeholder="Mark-up %" value="20">
+                    </div>
+                    <button class="commercial" onclick="calculateMarkup()" style="width: 100%; grid-column: span 2;">Calculate Mark-up</button>
+                    <div class="result-box" id="markupResult"></div>
+                </div>
+
+                <div class="commercial-panel">
+                    <h4>💹 Percentage Change</h4>
+                    <div class="commercial-inputs">
+                        <input type="number" id="oldValue" placeholder="Old Value" value="100">
+                        <input type="number" id="newValue" placeholder="New Value" value="150">
+                    </div>
+                    <button class="commercial" onclick="calculatePercentageChange()" style="width: 100%; grid-column: span 2;">Calculate % Change</button>
+                    <div class="result-box" id="percentageChangeResult"></div>
+                </div>
+
+                <div class="commercial-buttons" style="margin-top: 15px;">
+                    <button class="commercial" onclick="appendFunction('pow(')">x^2</button>
+                    <button class="commercial" onclick="appendFunction('sqrt(')">√x</button>
+                    <button class="commercial" onclick="appendOperator('%')">%</button>
+                    <button class="commercial" onclick="appendFunction('factorial(')">n!</button>
+                </div>
+            </div>
+
+            <!-- CALCULUS MODE -->
+            <div class="mode-section" id="calculusMode">
+                <div class="function-box">
+                    <div class="function-box-header">ƒ(x) Function Workspace</div>
+                    <div class="function-box-subtitle">Enter your function here, then use the calculus tools below.</div>
+                    <div class="function-input-row">
+                        <span class="function-label">f(x) =</span>
+                        <input id="calculusFunction" class="function-input" type="text" value="x^2 + 2*x + 1" placeholder="e.g. x^2 + sin(x)">
+                        <button class="calculus function-use-btn" onclick="useFunctionForCalculus()">Use Function</button>
+                    </div>
+                    <div class="function-examples">
+                        <button onclick="setCalculusFunction('x^2 + 2*x + 1')">x² + 2x + 1</button>
+                        <button onclick="setCalculusFunction('sin(x)')">sin(x)</button>
+                        <button onclick="setCalculusFunction('e^x')">eˣ</button>
+                        <button onclick="setCalculusFunction('sqrt(x)')">√x</button>
+                    </div>
+                </div>
+
+                <div class="calculus-dashboard">
+                    <div class="calculus-card">
+                        <h5>📘 Function Analysis</h5>
+                        <p>Enter a function of x, then calculate derivatives, limits, roots, tangent lines and more.</p>
+                    </div>
+                    <div class="calculus-card">
+                        <h5>🎯 Numerical Methods</h5>
+                        <p>Uses high-precision numerical approximations. Results are rounded for display.</p>
+                    </div>
+                </div>
+
+                <div style="font-size: 0.8em; color: #666; margin-bottom: 10px;">
+                    Build <b>f(x)</b> in the display above. Use x as the variable and choose an operation below.
+                </div>
+
+                <div class="scientific-buttons">
+                    <button class="calculus" onclick="appendFunction('sin(')">sin</button>
+                    <button class="calculus" onclick="appendFunction('cos(')">cos</button>
+                    <button class="calculus" onclick="appendFunction('tan(')">tan</button>
+                    <button class="calculus" onclick="appendFunction('asin(')">sin⁻¹</button>
+                    <button class="calculus" onclick="appendFunction('acos(')">cos⁻¹</button>
+
+                    <button class="calculus" onclick="appendFunction('atan(')">tan⁻¹</button>
+                    <button class="calculus" onclick="appendFunction('ln(')">ln</button>
+                    <button class="calculus" onclick="appendFunction('log(')">log₁₀</button>
+                    <button class="calculus" onclick="appendFunction('sqrt(')">√</button>
+                    <button class="calculus" onclick="appendFunction('cbrt(')">∛</button>
+
+                    <button class="calculus" onclick="appendFunction('exp(')">eˣ</button>
+                    <button class="calculus" onclick="appendOperator('^')">xʸ</button>
+                    <button class="calculus" onclick="appendConstant(Math.PI)">π</button>
+                    <button class="calculus" onclick="appendConstant(Math.E)">e</button>
+                    <button class="calculus" onclick="appendFunction('abs(')">|x|</button>
+
+                    <button class="calculus" onclick="appendFunction('x')" style="background: #0e6655;">x</button>
+                    <button class="calculus" onclick="appendOperator('(')" style="background: #f39c12; color: white;">(</button>
+                    <button class="calculus" onclick="appendOperator(')')" style="background: #f39c12; color: white;">)</button>
+                    <button class="calculus" onclick="appendNumber('1')" style="background:#1abc9c;color:white;">1</button>
+                    <button class="calculus" onclick="deleteLast()" style="background: #ffa502; color: white;">DEL</button>
+                </div>
+
+                <div class="calc-op-tabs">
+                    <button type="button" class="calc-op-btn active" data-op="integral" onclick="setCalcOp('integral')">∫ Integral</button>
+                    <button type="button" class="calc-op-btn" data-op="derivative" onclick="setCalcOp('derivative')">d/dx</button>
+                    <button type="button" class="calc-op-btn" data-op="series" onclick="setCalcOp('series')">Σ Series</button>
+                    <button type="button" class="calc-op-btn" data-op="limit" onclick="setCalcOp('limit')">lim</button>
+                    <button type="button" class="calc-op-btn" data-op="root" onclick="setCalcOp('root')">Root</button>
+                </div>
+
+                <div class="integration-panel">
+                    <h4 id="calcOpTitle">∫ Definite Integral (Simpson's Rule)</h4>
+
+                    <div class="integration-inputs" id="calcBoundsIntegral">
+                        <input type="number" id="calcLower" placeholder="Lower Bound (a)" value="0" step="0.1">
+                        <input type="number" id="calcUpper" placeholder="Upper Bound (b)" value="1" step="0.1">
+                    </div>
+                    <div class="integration-inputs" id="calcBoundsDerivative" style="display: none;">
+                        <input type="number" id="calcPoint" placeholder="At x =" value="2" step="0.1">
+                    </div>
+                    <div class="integration-inputs" id="calcBoundsSeries" style="display: none;">
+                        <input type="number" id="calcSeriesStart" placeholder="Start (n)" value="1" min="0">
+                        <input type="number" id="calcSeriesEnd" placeholder="End (n)" value="10" min="0">
+                    </div>
+                    <div class="integration-inputs" id="calcBoundsLimit" style="display: none;">
+                        <input type="number" id="calcLimitPoint" placeholder="Limit x →" value="0" step="0.1">
+                        <input type="number" id="calcLimitSteps" placeholder="Steps" value="8" min="3" max="12">
+                    </div>
+                    <div class="integration-inputs" id="calcBoundsRoot" style="display: none;">
+                        <input type="number" id="calcRootLeft" placeholder="Left guess" value="-1" step="0.1">
+                        <input type="number" id="calcRootRight" placeholder="Right guess" value="1" step="0.1">
+                    </div>
+
+                    <button class="calculus" onclick="computeCalculus()" style="width: 100%;">Evaluate f(x)</button>
+                    <div class="formula-hint" id="calcFormulaHint">Simpson's rule: approximates the signed area under f(x) between a and b.</div>
+                    <div class="result-box" id="calculusResult"></div>
+
+                    <div class="calc-advanced-grid">
+                        <button class="calculus" onclick="calculateTangent()">Tangent Line</button>
+                        <button class="calculus" onclick="calculateSecondDerivative()">f″(x)</button>
+                        <button class="calculus" onclick="calculateAverageValue()">Average Value</button>
+                        <button class="calculus" onclick="calculateCriticalPoint()">Critical Point</button>
+                        <button class="calculus" onclick="calculateArcLength()">Arc Length</button>
+                        <button class="calculus" onclick="clearCalcHistory()">Clear History</button>
+                    </div>
+
+                    <div class="calc-history" id="calcHistory"><strong>Calculation history</strong><div style="color:#777;margin-top:5px;">No calculations yet.</div></div>
+                </div>
+            </div>
+
+            <!-- VECTORS MODE -->
+            <div class="mode-section" id="vectorsMode">
+                <div class="vector-panel">
+                    <h4>🧮 Vector Space Basics (2D / 3D)</h4>
+                    <div style="font-size: 0.8em; color: #666; margin-bottom: 8px;">
+                        Enter vectors as comma-separated components, e.g. 1,2,3
+                    </div>
+                    <div class="commercial-inputs">
+                        <input type="text" id="vectorA" placeholder="Vector A" value="1,2,3">
+                        <input type="text" id="vectorB" placeholder="Vector B" value="4,5,6">
+                    </div>
+                    <div class="commercial-inputs">
+                        <input type="number" id="vectorScalar" placeholder="Scalar k" value="2">
+                    </div>
+
+                    <div class="vector-buttons">
+                        <button class="vector" onclick="vectorAdd()">A + B</button>
+                        <button class="vector" onclick="vectorSubtract()">A − B</button>
+                        <button class="vector" onclick="vectorDot()">A · B (dot)</button>
+                        <button class="vector" onclick="vectorCross()">A × B (cross)</button>
+                        <button class="vector" onclick="vectorScalarMultiply()">k · A</button>
+                        <button class="vector" onclick="vectorMagnitude('A')">|A|</button>
+                        <button class="vector" onclick="vectorMagnitude('B')">|B|</button>
+                        <button class="vector" onclick="vectorNormalize('A')">Unit vector Â</button>
+                        <button class="vector" onclick="vectorAngle()">∠(A, B)</button>
+                        <button class="vector" onclick="vectorProjection()">proj of A on B</button>
+                    </div>
+
+                    <div class="result-box" id="vectorResult"></div>
+                </div>
+            </div>
+
+            <!-- BASIC CALCULATOR BUTTONS (All modes) -->
+            <div class="buttons-container">
+                <button class="clear" onclick="clearDisplay()">C</button>
+                <button class="delete" onclick="deleteLast()">DEL</button>
+                <button class="operator" onclick="appendOperator('/')">÷</button>
+                <button class="operator" onclick="appendOperator('*')">×</button>
+                <button class="operator" onclick="appendOperator('%')">%</button>
+                
+                <button class="number" onclick="appendNumber('7')">7</button>
+                <button class="number" onclick="appendNumber('8')">8</button>
+                <button class="number" onclick="appendNumber('9')">9</button>
+                <button class="operator" onclick="appendOperator('-')">−</button>
+                <button class="operator" onclick="appendOperator('(')" style="background: #f39c12; color: white;">(</button>
+                
+                <button class="number" onclick="appendNumber('4')">4</button>
+                <button class="number" onclick="appendNumber('5')">5</button>
+                <button class="number" onclick="appendNumber('6')">6</button>
+                <button class="operator" onclick="appendOperator('+')">+</button>
+                <button class="operator" onclick="appendOperator(')')" style="background: #f39c12; color: white;">)</button>
+                
+                <button class="number" onclick="appendNumber('1')">1</button>
+                <button class="number" onclick="appendNumber('2')">2</button>
+                <button class="number" onclick="appendNumber('3')">3</button>
+                <button class="operator" onclick="appendOperator('.')">.</button>
+                <button class="operator" onclick="appendOperator('/')" style="background: #9b59b6; color: white;">÷</button>
+                
+                <button class="number" onclick="appendNumber('0')" style="grid-column: span 2;">0</button>
+                <button class="equals" onclick="calculate()" style="grid-column: span 3;">=</button>
+            </div>
+
+            <div class="footer-info">
+                ⚡ Basic | 📐 Scientific | 💰 Commercial | ∫ Calculus | 🧮 Vectors Modes Available
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById('display');
+        let currentInput = '0';
+        let operator = null;
+        let previousValue = null;
+        let shouldResetDisplay = false;
+        let memory = 0;
+        let angleMode = 'deg';
+        let currentMode = 'scientific';
+
+        // ===================== UTILITY FUNCTIONS =====================
+        function toRadians(degrees) {
+            if (angleMode === 'deg') return degrees * (Math.PI / 180);
+            if (angleMode === 'grad') return degrees * (Math.PI / 200);
+            return degrees;
+        }
+
+        function fromRadians(radians) {
+            if (angleMode === 'deg') return radians * (180 / Math.PI);
+            if (angleMode === 'grad') return radians * (200 / Math.PI);
+            return radians;
+        }
+
+        // Extended Math functions
+        Math.factorial = function(n) {
+            if (n < 0) return NaN;
+            if (n === 0 || n === 1) return 1;
+            let result = 1;
+            for (let i = 2; i <= n; i++) result *= i;
+            return result;
+        };
+
+        Math.cbrt = function(x) {
+            return Math.sign(x) * Math.pow(Math.abs(x), 1/3);
+        };
+
+        // ===================== DISPLAY & INPUT FUNCTIONS =====================
+        function updateDisplay() {
+            display.textContent = currentInput.length > 30 
+                ? currentInput.substring(0, 27) + '...' 
+                : currentInput;
+        }
+
+        function appendNumber(num) {
+            if (shouldResetDisplay) {
+                currentInput = num;
+                shouldResetDisplay = false;
+            } else {
+                if (currentInput === '0' && num !== '.') {
+                    currentInput = num;
+                } else if (num === '.' && currentInput.includes('.')) {
+                    return;
+                } else {
+                    currentInput += num;
+                }
+            }
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            if (operator !== null && !shouldResetDisplay) {
+                calculate();
+            }
+            previousValue = currentInput;
+            operator = op;
+            shouldResetDisplay = true;
+        }
+
+        function appendFunction(func) {
+            if (shouldResetDisplay || currentInput === '0') {
+                currentInput = func;
+            } else {
+                currentInput += func;
+            }
+            shouldResetDisplay = false;
+            updateDisplay();
+        }
+
+        function appendConstant(value) {
+            if (shouldResetDisplay) {
+                currentInput = value.toString();
+                shouldResetDisplay = false;
+            } else {
+                if (currentInput === '0') {
+                    currentInput = value.toString();
+                } else {
+                    currentInput += value.toString();
+                }
+            }
+            updateDisplay();
+        }
+
+        function toggleSign() {
+            if (currentInput !== '0') {
+                currentInput = currentInput.startsWith('-') 
+                    ? currentInput.substring(1) 
+                    : '-' + currentInput;
+                updateDisplay();
+            }
+        }
+
+        // ===================== BASIC CALCULATOR =====================
+        function calculate() {
+            if (operator && previousValue !== null) {
+                let result;
+                const prev = parseFloat(previousValue);
+                const current = parseFloat(currentInput);
+
+                switch (operator) {
+                    case '+':
+                        result = prev + current;
+                        break;
+                    case '-':
+                        result = prev - current;
+                        break;
+                    case '*':
+                        result = prev * current;
+                        break;
+                    case '/':
+                        result = current !== 0 ? prev / current : 0;
+                        break;
+                    case '%':
+                        result = prev % current;
+                        break;
+                    case '^':
+                        result = Math.pow(prev, current);
+                        break;
+                    default:
+                        return;
+                }
+
+                currentInput = result.toString();
+                operator = null;
+                previousValue = null;
+                shouldResetDisplay = true;
+            } else {
+                try {
+                    let expr = currentInput
+                        .replace(/sin\(/g, 'Math.sin(')
+                        .replace(/cos\(/g, 'Math.cos(')
+                        .replace(/tan\(/g, 'Math.tan(')
+                        .replace(/asin\(/g, 'Math.asin(')
+                        .replace(/acos\(/g, 'Math.acos(')
+                        .replace(/atan\(/g, 'Math.atan(')
+                        .replace(/sinh\(/g, 'Math.sinh(')
+                        .replace(/cosh\(/g, 'Math.cosh(')
+                        .replace(/tanh\(/g, 'Math.tanh(')
+                        .replace(/log\(/g, 'Math.log10(')
+                        .replace(/ln\(/g, 'Math.log(')
+                        .replace(/sqrt\(/g, 'Math.sqrt(')
+                        .replace(/cbrt\(/g, 'Math.cbrt(')
+                        .replace(/factorial\(/g, 'Math.factorial(')
+                        .replace(/abs\(/g, 'Math.abs(')
+                        .replace(/exp\(/g, 'Math.exp(')
+                        .replace(/pow\(/g, 'Math.pow(')
+                        .replace(/\^/g, '**');
+
+                    let result = eval(expr);
+                    currentInput = Math.round(result * 100000000) / 100000000 + '';
+                    shouldResetDisplay = true;
+                } catch (e) {
+                    currentInput = 'Error';
+                    shouldResetDisplay = true;
+                }
+            }
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            currentInput = '0';
+            operator = null;
+            previousValue = null;
+            shouldResetDisplay = false;
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            if (currentInput.length > 1) {
+                currentInput = currentInput.slice(0, -1);
+            } else {
+                currentInput = '0';
+            }
+            updateDisplay();
+        }
+
+        // ===================== MODE SWITCHING =====================
+        function switchMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+            
+            if (mode === 'scientific') {
+                document.getElementById('scientificMode').classList.add('active');
+            } else if (mode === 'commercial') {
+                document.getElementById('commercialMode').classList.add('active');
+            } else if (mode === 'calculus') {
+                document.getElementById('calculusMode').classList.add('active');
+            } else if (mode === 'vectors') {
+                document.getElementById('vectorsMode').classList.add('active');
+            }
+            
+            event.target.classList.add('active');
+        }
+
+        function setAngleMode(mode) {
+            angleMode = mode;
+            document.querySelectorAll('.angle-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.mode === mode) btn.classList.add('active');
+            });
+        }
+
+        // ===================== MEMORY FUNCTIONS =====================
+        function memoryClear() {
+            memory = 0;
+            updateMemoryDisplay();
+        }
+
+        function memoryAdd() {
+            try {
+                memory += parseFloat(currentInput) || 0;
+                updateMemoryDisplay();
+            } catch (e) {}
+        }
+
+        function memorySubtract() {
+            try {
+                memory -= parseFloat(currentInput) || 0;
+                updateMemoryDisplay();
+            } catch (e) {}
+        }
+
+        function memoryRecall() {
+            currentInput = memory.toString();
+            shouldResetDisplay = true;
+            updateDisplay();
+        }
+
+        function updateMemoryDisplay() {
+            document.getElementById('memoryValue').textContent = memory.toFixed(2);
+        }
+
+        // ===================== COMMERCIAL FUNCTIONS =====================
+        function calculateDiscount() {
+            const price = parseFloat(document.getElementById('originalPrice').value) || 0;
+            const discount = parseFloat(document.getElementById('discountPercent').value) || 0;
+            const discountAmount = price * (discount / 100);
+            const finalPrice = price - discountAmount;
+            document.getElementById('discountResult').innerHTML = 
+                `Discount: ₹${discountAmount.toFixed(2)}<br>Final Price: ₹${finalPrice.toFixed(2)}`;
+            currentInput = finalPrice.toString();
+            updateDisplay();
+        }
+
+        function calculateProfitLoss() {
+            const cost = parseFloat(document.getElementById('costPrice').value) || 0;
+            const selling = parseFloat(document.getElementById('sellingPrice').value) || 0;
+            const profitLoss = selling - cost;
+            const percentage = (profitLoss / cost) * 100;
+            const type = profitLoss >= 0 ? 'Profit' : 'Loss';
+            document.getElementById('profitLossResult').innerHTML = 
+                `${type}: ₹${Math.abs(profitLoss).toFixed(2)}<br>${type} %: ${percentage.toFixed(2)}%`;
+            currentInput = profitLoss.toString();
+            updateDisplay();
+        }
+
+        function calculateSimpleInterest() {
+            const p = parseFloat(document.getElementById('principal').value) || 0;
+            const r = parseFloat(document.getElementById('rate').value) || 0;
+            const t = parseFloat(document.getElementById('time').value) || 0;
+            const si = (p * r * t) / 100;
+            const amount = p + si;
+            document.getElementById('interestResult').innerHTML = 
+                `Simple Interest: ₹${si.toFixed(2)}<br>Total Amount: ₹${amount.toFixed(2)}`;
+            currentInput = si.toString();
+            updateDisplay();
+        }
+
+        function calculateCompoundInterest() {
+            const p = parseFloat(document.getElementById('principal').value) || 0;
+            const r = parseFloat(document.getElementById('rate').value) || 0;
+            const t = parseFloat(document.getElementById('time').value) || 0;
+            const n = parseFloat(document.getElementById('frequency').value) || 1;
+            const amount = p * Math.pow((1 + r/(100*n)), (n*t));
+            const ci = amount - p;
+            document.getElementById('interestResult').innerHTML = 
+                `Compound Interest: ₹${ci.toFixed(2)}<br>Total Amount: ₹${amount.toFixed(2)}`;
+            currentInput = ci.toString();
+            updateDisplay();
+        }
+
+        function calculateMarkup() {
+            const cost = parseFloat(document.getElementById('costPriceMarkup').value) || 0;
+            const markup = parseFloat(document.getElementById('markupPercent').value) || 0;
+            const markupAmount = cost * (markup / 100);
+            const sellingPrice = cost + markupAmount;
+            document.getElementById('markupResult').innerHTML = 
+                `Mark-up: ₹${markupAmount.toFixed(2)}<br>Selling Price: ₹${sellingPrice.toFixed(2)}`;
+            currentInput = sellingPrice.toString();
+            updateDisplay();
+        }
+
+        function calculatePercentageChange() {
+            const old = parseFloat(document.getElementById('oldValue').value) || 0;
+            const newVal = parseFloat(document.getElementById('newValue').value) || 0;
+            const change = newVal - old;
+            const percentage = (change / old) * 100;
+            document.getElementById('percentageChangeResult').innerHTML = 
+                `Change: ${change.toFixed(2)}<br>% Change: ${percentage.toFixed(2)}%`;
+            currentInput = percentage.toString();
+            updateDisplay();
+        }
+
+        // ===================== ENHANCED CALCULUS FUNCTIONS =====================
+
+        function setCalculusFunction(expr) {
+            document.getElementById('calculusFunction').value = expr;
+            useFunctionForCalculus();
+        }
+
+        function useFunctionForCalculus() {
+            const input = document.getElementById('calculusFunction');
+            const expr = input.value.trim();
+            if (!expr) return;
+            currentInput = expr.replace(/e\^x/g, 'exp(x)');
+            shouldResetDisplay = false;
+            updateDisplay();
+        }
+
+        function evaluateExpression(expr, x) {
+            let e = String(expr)
+                .replace(/\bpi\b/gi, 'Math.PI')
+                .replace(/\be\b/g, 'Math.E')
+                .replace(/x/g, `(${x})`)
+                .replace(/sin\(/g, 'Math.sin(')
+                .replace(/cos\(/g, 'Math.cos(')
+                .replace(/tan\(/g, 'Math.tan(')
+                .replace(/asin\(/g, 'Math.asin(')
+                .replace(/acos\(/g, 'Math.acos(')
+                .replace(/atan\(/g, 'Math.atan(')
+                .replace(/sinh\(/g, 'Math.sinh(')
+                .replace(/cosh\(/g, 'Math.cosh(')
+                .replace(/tanh\(/g, 'Math.tanh(')
+                .replace(/log\(/g, 'Math.log10(')
+                .replace(/ln\(/g, 'Math.log(')
+                .replace(/sqrt\(/g, 'Math.sqrt(')
+                .replace(/cbrt\(/g, 'Math.cbrt(')
+                .replace(/factorial\(/g, 'Math.factorial(')
+                .replace(/abs\(/g, 'Math.abs(')
+                .replace(/exp\(/g, 'Math.exp(')
+                .replace(/\^/g, '**');
+            try { return eval(e); } catch (err) { return NaN; }
+        }
+
+        let calcOp = 'integral';
+
+        function setCalcOp(op) {
+            calcOp = op;
+            document.querySelectorAll('.calc-op-btn').forEach(b => b.classList.remove('active'));
+            const active = document.querySelector(`.calc-op-btn[data-op="${op}"]`);
+            if (active) active.classList.add('active');
+
+            ['Integral','Derivative','Series','Limit','Root'].forEach(k => {
+                const el = document.getElementById('calcBounds' + k);
+                if (el) el.style.display = op === k.toLowerCase() ? 'grid' : 'none';
+            });
+
+            const titles = {
+                integral: "∫ Definite Integral (Simpson's Rule)",
+                derivative: "d/dx Numerical Derivative",
+                series: "Σ Finite Series",
+                limit: "lim Numerical Limit",
+                root: "f(x) = 0 Root Finder (Bisection)"
+            };
+            const hints = {
+                integral: "Simpson's rule approximates the signed area under f(x).",
+                derivative: "Central difference: uses nearby points to estimate the slope.",
+                series: "Evaluates f(n) and adds the terms from start to end.",
+                limit: "Approaches the target from both sides and compares the values.",
+                root: "Bisection searches for a sign change and repeatedly halves the interval."
+            };
+            document.getElementById('calcOpTitle').textContent = titles[op];
+            document.getElementById('calcFormulaHint').textContent = hints[op];
+            document.getElementById('calculusResult').innerHTML = '';
+        }
+
+        function addCalcHistory(text) {
+            const box = document.getElementById('calcHistory');
+            if (box.innerHTML.includes('No calculations yet.')) box.innerHTML = '<strong>Calculation history</strong>';
+            const item = document.createElement('div');
+            item.className = 'calc-history-item';
+            item.textContent = text;
+            box.appendChild(item);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function computeCalculus() {
+            const expr = currentInput;
+            let resultValue = NaN, resultText = '';
+            try {
+                if (calcOp === 'integral') {
+                    const a = parseFloat(document.getElementById('calcLower').value);
+                    const b = parseFloat(document.getElementById('calcUpper').value);
+                    const n = 1000;
+                    const h = (b - a) / n;
+                    let sum = evaluateExpression(expr, a) + evaluateExpression(expr, b);
+                    for (let i = 1; i < n; i++) {
+                        const y = evaluateExpression(expr, a + i * h);
+                        if (!Number.isFinite(y)) throw new Error('domain');
+                        sum += (i % 2 === 0 ? 2 : 4) * y;
+                    }
+                    resultValue = h * sum / 3;
+                    resultText = `∫[${a}, ${b}] ${expr} dx = ${resultValue.toFixed(8)}`;
+                } else if (calcOp === 'derivative') {
+                    const x = parseFloat(document.getElementById('calcPoint').value);
+                    resultValue = numericalDerivative(expr, x);
+                    resultText = `f′(${x}) = ${resultValue.toFixed(8)}`;
+                } else if (calcOp === 'series') {
+                    const start = parseInt(document.getElementById('calcSeriesStart').value);
+                    const end = parseInt(document.getElementById('calcSeriesEnd').value);
+                    if (end < start || end - start > 10000) throw new Error('range');
+                    let sum = 0;
+                    for (let i = start; i <= end; i++) sum += evaluateExpression(expr, i);
+                    resultValue = sum;
+                    resultText = `Σ(n=${start}→${end}) f(n) = ${resultValue.toFixed(8)}`;
+                } else if (calcOp === 'limit') {
+                    const point = parseFloat(document.getElementById('calcLimitPoint').value);
+                    const steps = parseInt(document.getElementById('calcLimitSteps').value);
+                    const r = numericalLimit(expr, point, steps);
+                    resultValue = r.value;
+                    resultText = `lim[x→${point}] ${expr} ≈ ${r.value.toFixed(8)} (left ${r.left.toFixed(6)}, right ${r.right.toFixed(6)})`;
+                } else if (calcOp === 'root') {
+                    const left = parseFloat(document.getElementById('calcRootLeft').value);
+                    const right = parseFloat(document.getElementById('calcRootRight').value);
+                    resultValue = bisectionRoot(expr, left, right);
+                    resultText = `Root of ${expr} in [${left}, ${right}] ≈ x = ${resultValue.toFixed(10)}`;
+                }
+                if (!Number.isFinite(resultValue)) throw new Error('invalid');
+                document.getElementById('calculusResult').innerHTML = resultText;
+                currentInput = resultValue.toString();
+                shouldResetDisplay = true;
+                updateDisplay();
+                addCalcHistory(resultText);
+            } catch (e) {
+                document.getElementById('calculusResult').innerHTML = 'Error: check the function, domain, and input values.';
+            }
+        }
+
+        function numericalDerivative(expr, x, h = 1e-5) {
+            const f1 = evaluateExpression(expr, x + h);
+            const f2 = evaluateExpression(expr, x - h);
+            if (!Number.isFinite(f1) || !Number.isFinite(f2)) return NaN;
+            return (f1 - f2) / (2 * h);
+        }
+
+        function numericalSecondDerivative(expr, x, h = 1e-4) {
+            const f0 = evaluateExpression(expr, x);
+            const f1 = evaluateExpression(expr, x + h);
+            const f2 = evaluateExpression(expr, x - h);
+            if (![f0,f1,f2].every(Number.isFinite)) return NaN;
+            return (f1 - 2*f0 + f2) / (h*h);
+        }
+
+        function numericalLimit(expr, point, steps = 8) {
+            let left = NaN, right = NaN;
+            for (let i = steps; i >= 1; i--) {
+                const h = Math.pow(10, -i);
+                const l = evaluateExpression(expr, point - h);
+                const r = evaluateExpression(expr, point + h);
+                if (Number.isFinite(l)) left = l;
+                if (Number.isFinite(r)) right = r;
+            }
+            if (!Number.isFinite(left) || !Number.isFinite(right)) throw new Error('limit');
+            return {left, right, value: (left + right) / 2};
+        }
+
+        function bisectionRoot(expr, a, b) {
+            let fa = evaluateExpression(expr, a), fb = evaluateExpression(expr, b);
+            if (!Number.isFinite(fa) || !Number.isFinite(fb) || fa * fb > 0) throw new Error('bracket');
+            if (fa === 0) return a;
+            if (fb === 0) return b;
+            for (let i = 0; i < 100; i++) {
+                const mid = (a + b) / 2, fm = evaluateExpression(expr, mid);
+                if (!Number.isFinite(fm)) throw new Error('domain');
+                if (Math.abs(fm) < 1e-12 || Math.abs(b-a) < 1e-12) return mid;
+                if (fa * fm <= 0) { b = mid; fb = fm; } else { a = mid; fa = fm; }
+            }
+            return (a+b)/2;
+        }
+
+        function getCalcPoint() {
+            const x = parseFloat(document.getElementById('calcPoint').value);
+            if (!Number.isFinite(x)) throw new Error('point');
+            return x;
+        }
+
+        function calculateTangent() {
+            try {
+                const expr = currentInput, x0 = getCalcPoint();
+                const y0 = evaluateExpression(expr, x0), m = numericalDerivative(expr, x0);
+                if (![y0,m].every(Number.isFinite)) throw new Error();
+                const b = y0 - m*x0;
+                const result = `Tangent at x=${x0}: y = ${m.toFixed(8)}x ${b >= 0 ? '+' : '−'} ${Math.abs(b).toFixed(8)}`;
+                document.getElementById('calculusResult').innerHTML = result;
+                addCalcHistory(result);
+            } catch(e) { document.getElementById('calculusResult').innerHTML = 'Error: enter a valid function and point.'; }
+        }
+
+        function calculateSecondDerivative() {
+            try {
+                const expr = currentInput, x0 = getCalcPoint();
+                const v = numericalSecondDerivative(expr, x0);
+                if (!Number.isFinite(v)) throw new Error();
+                const result = `f″(${x0}) = ${v.toFixed(8)}`;
+                document.getElementById('calculusResult').innerHTML = result;
+                addCalcHistory(result);
+            } catch(e) { document.getElementById('calculusResult').innerHTML = 'Error: enter a valid function and point.'; }
+        }
+
+        function calculateAverageValue() {
+            try {
+                const a = parseFloat(document.getElementById('calcLower').value);
+                const b = parseFloat(document.getElementById('calcUpper').value);
+                if (b === a) throw new Error();
+                const n = 1000, h = (b-a)/n;
+                let sum = evaluateExpression(currentInput,a) + evaluateExpression(currentInput,b);
+                for (let i=1;i<n;i++) sum += (i%2===0?2:4)*evaluateExpression(currentInput,a+i*h);
+                const integral = h*sum/3, avg = integral/(b-a);
+                const result = `Average value on [${a}, ${b}] = ${avg.toFixed(8)}`;
+                document.getElementById('calculusResult').innerHTML = result;
+                addCalcHistory(result);
+            } catch(e) { document.getElementById('calculusResult').innerHTML = 'Error: enter valid bounds and function.'; }
+        }
+
+        function calculateCriticalPoint() {
+            try {
+                const x0 = getCalcPoint();
+                const root = bisectionRoot(
+                    `(${currentInput})`,
+                    x0 - 2,
+                    x0 + 2
+                );
+                const y = evaluateExpression(currentInput, root);
+                const result = `Critical-point search near x=${x0}: x ≈ ${root.toFixed(8)}, f(x) ≈ ${y.toFixed(8)}`;
+                document.getElementById('calculusResult').innerHTML = result;
+                addCalcHistory(result);
+            } catch(e) {
+                document.getElementById('calculusResult').innerHTML = 'Could not find a root in the ±2 interval. Use Root with a bracket where f(x) changes sign.';
+            }
+        }
+
+        function calculateArcLength() {
+            try {
+                const a = parseFloat(document.getElementById('calcLower').value);
+                const b = parseFloat(document.getElementById('calcUpper').value);
+                if (b === a) throw new Error();
+                const n = 500, h = (b-a)/n;
+                let sum = 0;
+                for (let i=0;i<=n;i++) {
+                    const x = a+i*h, d = numericalDerivative(currentInput,x);
+                    if (!Number.isFinite(d)) throw new Error();
+                    const term = Math.sqrt(1+d*d);
+                    sum += (i===0 || i===n ? 1 : (i%2===0 ? 2 : 4))*term;
+                }
+                const length = h*sum/3;
+                const result = `Arc length on [${a}, ${b}] ≈ ${length.toFixed(8)}`;
+                document.getElementById('calculusResult').innerHTML = result;
+                addCalcHistory(result);
+            } catch(e) { document.getElementById('calculusResult').innerHTML = 'Error: enter a valid function and bounds.'; }
+        }
+
+        function clearCalcHistory() {
+            document.getElementById('calcHistory').innerHTML = '<strong>Calculation history</strong><div style="color:#777;margin-top:5px;">No calculations yet.</div>';
+        }
+
+        // ===================== VECTOR SPACE FUNCTIONS =====================
+        function parseVector(id) {
+            return document.getElementById(id).value
+                .split(',')
+                .map(s => parseFloat(s.trim()))
+                .filter(n => !isNaN(n));
+        }
+
+        function formatVector(v) {
+            return '(' + v.map(n => Math.round(n * 10000) / 10000).join(', ') + ')';
+        }
+
+        function showVectorError(msg) {
+            document.getElementById('vectorResult').innerHTML = msg || 'Vectors must have the same number of components';
+        }
+
+        function vectorAdd() {
+            const a = parseVector('vectorA'), b = parseVector('vectorB');
+            if (a.length !== b.length || a.length === 0) return showVectorError();
+            document.getElementById('vectorResult').innerHTML = `A + B = ${formatVector(a.map((v, i) => v + b[i]))}`;
+        }
+
+        function vectorSubtract() {
+            const a = parseVector('vectorA'), b = parseVector('vectorB');
+            if (a.length !== b.length || a.length === 0) return showVectorError();
+            document.getElementById('vectorResult').innerHTML = `A − B = ${formatVector(a.map((v, i) => v - b[i]))}`;
+        }
+
+        function vectorDot() {
+            const a = parseVector('vectorA'), b = parseVector('vectorB');
+            if (a.length !== b.length || a.length === 0) return showVectorError();
+            const dot = a.reduce((s, v, i) => s + v * b[i], 0);
+            document.getElementById('vectorResult').innerHTML = `A · B = ${Math.round(dot * 10000) / 10000}`;
+        }
+
+        function vectorCross() {
+            const a = parseVector('vectorA'), b = parseVector('vectorB');
+            if (a.length !== 3 || b.length !== 3) return showVectorError('Cross product needs two 3D vectors (3 components each)');
+            const r = [
+                a[1] * b[2] - a[2] * b[1],
+                a[2] * b[0] - a[0] * b[2],
+                a[0] * b[1] - a[1] * b[0]
+            ];
+            document.getElementById('vectorResult').innerHTML = `A × B = ${formatVector(r)}`;
+        }
+
+        function vectorScalarMultiply() {
+            const a = parseVector('vectorA');
+            const k = parseFloat(document.getElementById('vectorScalar').value) || 0;
+            if (a.length === 0) return showVectorError('Enter Vector A');
+            document.getElementById('vectorResult').innerHTML = `k · A = ${formatVector(a.map(v => v * k))}`;
+        }
+
+        function vectorMagnitude(which) {
+            const v = parseVector(which === 'A' ? 'vectorA' : 'vectorB');
+            if (v.length === 0) return showVectorError(`Enter Vector ${which}`);
+            const mag = Math.sqrt(v.reduce((s, x) => s + x * x, 0));
+            document.getElementById('vectorResult').innerHTML = `|${which}| = ${Math.round(mag * 10000) / 10000}`;
+        }
+
+        function vectorNormalize(which) {
+            const v = parseVector(which === 'A' ? 'vectorA' : 'vectorB');
+            if (v.length === 0) return showVectorError(`Enter Vector ${which}`);
+            const mag = Math.sqrt(v.reduce((s, x) => s + x * x, 0));
+            if (mag === 0) return showVectorError('Cannot normalize a zero vector');
+            document.getElementById('vectorResult').innerHTML = `${which}̂ = ${formatVector(v.map(x => x / mag))} (unit vector)`;
+        }
+
+        function vectorAngle() {
+            const a = parseVector('vectorA'), b = parseVector('vectorB');
+            if (a.length !== b.length || a.length === 0) return showVectorError();
+            const dot = a.reduce((s, v, i) => s + v * b[i], 0);
+            const magA = Math.sqrt(a.reduce((s, x) => s + x * x, 0));
+            const magB = Math.sqrt(b.reduce((s, x) => s + x * x, 0));
+            if (magA === 0 || magB === 0) return showVectorError('Angle undefined for a zero vector');
+            const cosTheta = Math.max(-1, Math.min(1, dot / (magA * magB)));
+            const angleRad = Math.acos(cosTheta);
+            const angleDeg = angleRad * 180 / Math.PI;
+            document.getElementById('vectorResult').innerHTML = `∠(A, B) = ${angleDeg.toFixed(2)}° (${angleRad.toFixed(4)} rad)`;
+        }
+
+        function vectorProjection() {
+            const a = parseVector('vectorA'), b = parseVector('vectorB');
+            if (a.length !== b.length || a.length === 0) return showVectorError();
+            const dot = a.reduce((s, v, i) => s + v * b[i], 0);
+            const magBSq = b.reduce((s, x) => s + x * x, 0);
+            if (magBSq === 0) return showVectorError('Cannot project onto a zero vector');
+            const scale = dot / magBSq;
+            document.getElementById('vectorResult').innerHTML = `proj of A on B = ${formatVector(b.map(x => x * scale))}`;
+        }
+
+        // Initialize
+        updateDisplay();
+    </script>
+</body>
+</html>
