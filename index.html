@@ -12,14 +12,93 @@
     --primary: #6366f1;
     --primary-hover: #4f46e5;
     --primary-light: #e0e7ff;
-    --bg-surface: #ffffff;
+    --bg-gradient: radial-gradient(circle at 15% 15%, #818cf8 0%, transparent 40%),
+                   radial-gradient(circle at 85% 85%, #c084fc 0%, transparent 40%),
+                   linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    --bg-card: #ffffff;
     --text-main: #0f172a;
     --text-muted: #64748b;
     --border-color: #e2e8f0;
-    --radius-lg: 24px;
-    --radius-md: 14px;
-    --radius-sm: 10px;
+    --input-bg: #f8fafc;
+    --nav-bg: #f1f5f9;
+    --nav-active-bg: #ffffff;
+    --display-bg: #090d16;
+    --display-text: #38bdf8;
+    --key-num-bg: #f8fafc;
+    --key-num-text: #1e293b;
+    --key-op-bg: #eff6ff;
+    --key-op-text: #3b82f6;
+    --key-sci-bg: #f5f3ff;
+    --key-sci-text: #7c3aed;
+    --key-clear-bg: #fee2e2;
+    --key-clear-text: #ef4444;
+    --key-del-bg: #ffedd5;
+    --key-del-text: #f97316;
+    --key-other-bg: #f1f5f9;
+    --key-other-text: #475569;
     --shadow-card: 0 25px 60px -15px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+  }
+
+  /* DARK MODE (Slate Theme) */
+  body.theme-dark {
+    --primary: #818cf8;
+    --primary-hover: #6366f1;
+    --primary-light: rgba(99, 102, 241, 0.2);
+    --bg-gradient: radial-gradient(circle at 15% 15%, #1e1b4b 0%, transparent 40%),
+                   radial-gradient(circle at 85% 85%, #311042 0%, transparent 40%),
+                   linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    --bg-card: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border-color: #334155;
+    --input-bg: #0f172a;
+    --nav-bg: #0f172a;
+    --nav-active-bg: #334155;
+    --display-bg: #0b0f19;
+    --display-text: #38bdf8;
+    --key-num-bg: #0f172a;
+    --key-num-text: #e2e8f0;
+    --key-op-bg: #1e3a8a;
+    --key-op-text: #93c5fd;
+    --key-sci-bg: #2e1065;
+    --key-sci-text: #c4b5fd;
+    --key-clear-bg: #450a0a;
+    --key-clear-text: #fca5a5;
+    --key-del-bg: #431407;
+    --key-del-text: #fdba74;
+    --key-other-bg: #334155;
+    --key-other-text: #cbd5e1;
+    --shadow-card: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  }
+
+  /* NIGHT MODE (AMOLED / Pure Black Theme) */
+  body.theme-night {
+    --primary: #a855f7;
+    --primary-hover: #9333ea;
+    --primary-light: rgba(168, 85, 247, 0.2);
+    --bg-gradient: linear-gradient(135deg, #000000 0%, #09090b 100%);
+    --bg-card: #09090b;
+    --text-main: #fafafa;
+    --text-muted: #71717a;
+    --border-color: #27272a;
+    --input-bg: #121215;
+    --nav-bg: #121215;
+    --nav-active-bg: #27272a;
+    --display-bg: #000000;
+    --display-text: #a855f7;
+    --key-num-bg: #121215;
+    --key-num-text: #fafafa;
+    --key-op-bg: #18181b;
+    --key-op-text: #a855f7;
+    --key-sci-bg: #18181b;
+    --key-sci-text: #c084fc;
+    --key-clear-bg: #271014;
+    --key-clear-text: #f87171;
+    --key-del-bg: #24140b;
+    --key-del-text: #fb923c;
+    --key-other-bg: #18181b;
+    --key-other-text: #a1a1aa;
+    --shadow-card: 0 25px 60px -15px rgba(0, 0, 0, 0.95), 0 0 0 1px #27272a inset;
   }
 
   * { 
@@ -30,52 +109,81 @@
 
   body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: radial-gradient(circle at 15% 15%, #818cf8 0%, transparent 40%),
-                radial-gradient(circle at 85% 85%, #c084fc 0%, transparent 40%),
-                linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    background: var(--bg-gradient);
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 24px 16px;
     color: var(--text-main);
+    transition: background 0.3s ease;
   }
 
   .calculator {
-    background: var(--bg-surface);
-    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    border-radius: 24px;
     box-shadow: var(--shadow-card);
-    padding: 28px 24px;
+    padding: 24px;
     width: 100%;
     max-width: 440px;
-    overflow: hidden;
-    transition: transform 0.2s ease;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
   }
 
   .header {
-    text-align: center;
-    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
   }
 
   .header h1 {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     font-weight: 700;
     letter-spacing: -0.02em;
     color: var(--text-main);
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
+    gap: 6px;
+  }
+
+  /* Theme Switcher */
+  .theme-switch {
+    display: flex;
+    background: var(--nav-bg);
+    border: 1px solid var(--border-color);
+    padding: 3px;
+    border-radius: 20px;
+    gap: 2px;
+  }
+
+  .theme-btn {
+    border: none;
+    background: transparent;
+    padding: 4px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    border-radius: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .theme-btn.active {
+    background: var(--primary);
+    color: #ffffff;
   }
 
   /* Segmented Nav Bar */
   .modes {
     display: flex;
-    background: #f1f5f9;
+    background: var(--nav-bg);
     padding: 4px;
-    border-radius: var(--radius-md);
+    border-radius: 14px;
     gap: 4px;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
   }
 
   .mode-btn {
@@ -99,27 +207,26 @@
   }
 
   .mode-btn.active {
-    background: #ffffff;
+    background: var(--nav-active-bg);
     color: var(--primary);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
   }
 
-  /* Digital Display Screen */
+  /* Display */
   .display-wrapper {
-    margin-bottom: 18px;
+    margin-bottom: 16px;
   }
 
   .display {
-    background: #090d16;
-    color: #f8fafc;
-    border-radius: var(--radius-md);
+    background: var(--display-bg);
+    border-radius: 14px;
     padding: 16px 20px;
     min-height: 90px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
-    border: 1px solid rgba(255,255,255,0.06);
+    border: 1px solid var(--border-color);
   }
 
   #expression {
@@ -138,23 +245,20 @@
     text-align: right;
     word-break: break-all;
     letter-spacing: -0.02em;
-    color: #38bdf8;
+    color: var(--display-text);
   }
 
   .result-banner {
-    background: #090d16;
-    color: #38bdf8;
+    background: var(--display-bg);
+    color: var(--display-text);
     font-family: 'JetBrains Mono', monospace;
     padding: 14px 18px;
-    border-radius: var(--radius-md);
-    font-size: 0.95rem;
+    border-radius: 14px;
+    font-size: 0.92rem;
     font-weight: 600;
     margin-top: 14px;
-    border: 1px solid rgba(255,255,255,0.06);
+    border: 1px solid var(--border-color);
     word-break: break-word;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
   }
 
   .angle-toggle {
@@ -169,7 +273,7 @@
     font-size: 0.68rem;
     font-weight: 600;
     border: 1px solid var(--border-color);
-    background: #ffffff;
+    background: var(--bg-card);
     color: var(--text-muted);
     border-radius: 6px;
     cursor: pointer;
@@ -177,12 +281,12 @@
   }
 
   .angle-toggle button.active {
-    background: #0f172a;
+    background: var(--primary);
     color: #ffffff;
-    border-color: #0f172a;
+    border-color: var(--primary);
   }
 
-  /* Keypads */
+  /* Grid Buttons */
   .grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -193,7 +297,7 @@
     font-family: inherit;
     padding: 13px 0;
     border: none;
-    border-radius: var(--radius-sm);
+    border-radius: 10px;
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
@@ -205,20 +309,20 @@
     transform: scale(0.95);
   }
 
-  .num { background: #f8fafc; color: #1e293b; border: 1px solid #e2e8f0; }
-  .num:hover { background: #f1f5f9; }
-  .op { background: #eff6ff; color: #3b82f6; }
-  .op:hover { background: #dbeafe; }
-  .sci { background: #f5f3ff; color: #7c3aed; font-size: 0.82rem; }
-  .sci:hover { background: #ede9fe; }
+  .num { background: var(--key-num-bg); color: var(--key-num-text); border: 1px solid var(--border-color); }
+  .num:hover { filter: brightness(0.95); }
+  .op { background: var(--key-op-bg); color: var(--key-op-text); }
+  .op:hover { filter: brightness(0.95); }
+  .sci { background: var(--key-sci-bg); color: var(--key-sci-text); font-size: 0.82rem; }
+  .sci:hover { filter: brightness(0.95); }
   .eq { background: #10b981; color: white; }
   .eq:hover { background: #059669; }
-  .clear { background: #fee2e2; color: #ef4444; }
-  .clear:hover { background: #fecaca; }
-  .del { background: #ffedd5; color: #f97316; }
-  .del:hover { background: #fed7aa; }
-  .paren { background: #f1f5f9; color: #475569; }
-  .mem { background: #f1f5f9; color: #64748b; font-size: 0.75rem; }
+  .clear { background: var(--key-clear-bg); color: var(--key-clear-text); }
+  .clear:hover { filter: brightness(0.95); }
+  .del { background: var(--key-del-bg); color: var(--key-del-text); }
+  .del:hover { filter: brightness(0.95); }
+  .paren { background: var(--key-other-bg); color: var(--key-other-text); }
+  .mem { background: var(--key-other-bg); color: var(--key-other-text); font-size: 0.75rem; }
 
   /* Panels */
   .panel { display: none; }
@@ -229,7 +333,6 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* Form & Interactive Elements */
   .form-container {
     display: flex;
     flex-direction: column;
@@ -239,13 +342,13 @@
   select.custom-select {
     width: 100%;
     padding: 11px 14px;
-    border-radius: var(--radius-md);
+    border-radius: 12px;
     border: 1.5px solid var(--border-color);
     font-family: inherit;
     font-size: 0.88rem;
     font-weight: 600;
     color: var(--text-main);
-    background: #ffffff;
+    background: var(--input-bg);
     outline: none;
     cursor: pointer;
     transition: 0.2s;
@@ -267,18 +370,19 @@
     width: 100%;
     min-width: 0;
     padding: 11px 14px;
-    border-radius: var(--radius-sm);
+    border-radius: 10px;
     border: 1.5px solid var(--border-color);
     font-size: 0.9rem;
     font-family: inherit;
     outline: none;
+    color: var(--text-main);
+    background: var(--input-bg);
     transition: 0.2s;
-    background: #f8fafc;
   }
 
   .input-field:focus {
     border-color: var(--primary);
-    background: #ffffff;
+    background: var(--bg-card);
     box-shadow: 0 0 0 3px var(--primary-light);
   }
 
@@ -286,7 +390,7 @@
     width: 100%;
     padding: 12px;
     border: none;
-    border-radius: var(--radius-sm);
+    border-radius: 10px;
     background: var(--primary);
     color: #ffffff;
     font-family: inherit;
@@ -305,11 +409,11 @@
     transform: scale(0.98);
   }
 
-  /* Vector Input Group & Action Grid */
+  /* Vector Input Group */
   .vector-group {
-    background: #f8fafc;
+    background: var(--input-bg);
     border: 1.5px solid var(--border-color);
-    border-radius: var(--radius-md);
+    border-radius: 12px;
     padding: 12px;
     display: flex;
     flex-direction: column;
@@ -343,7 +447,8 @@
     border: 1.5px solid var(--border-color);
     font-size: 0.9rem;
     font-weight: 600;
-    background: #ffffff;
+    color: var(--text-main);
+    background: var(--bg-card);
     outline: none;
     box-sizing: border-box;
     transition: 0.2s;
@@ -374,10 +479,10 @@
 
   .vector-actions-grid button {
     padding: 11px 8px;
-    border: 1.5px solid #e0e7ff;
-    border-radius: var(--radius-sm);
-    background: #eef2ff;
-    color: var(--primary);
+    border: 1.5px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--key-op-bg);
+    color: var(--key-op-text);
     font-family: inherit;
     font-weight: 600;
     font-size: 0.82rem;
@@ -408,7 +513,14 @@
 
 <div class="calculator">
   <div class="header">
-    <h1>🧮 All-in-One Calculator</h1>
+    <h1>🧮 Calculator</h1>
+    
+    <!-- Theme Switcher: Light, Dark, Night -->
+    <div class="theme-switch">
+      <button class="theme-btn active" data-theme="light" title="Light Mode">☀️ Light</button>
+      <button class="theme-btn" data-theme="dark" title="Dark Slate Mode">🌙 Dark</button>
+      <button class="theme-btn" data-theme="night" title="AMOLED Night Mode">✨ Night</button>
+    </div>
   </div>
 
   <div class="modes">
@@ -591,6 +703,27 @@
 </div>
 
 <script>
+/* ---------- THEME SYSTEM ---------- */
+const themeButtons = document.querySelectorAll('.theme-btn');
+
+function setTheme(theme) {
+  document.body.classList.remove('theme-dark', 'theme-night');
+  if (theme === 'dark') document.body.classList.add('theme-dark');
+  if (theme === 'night') document.body.classList.add('theme-night');
+
+  themeButtons.forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.theme === theme);
+  });
+  localStorage.setItem('calculator_theme', theme);
+}
+
+themeButtons.forEach(btn => {
+  btn.addEventListener('click', () => setTheme(btn.dataset.theme));
+});
+
+const savedTheme = localStorage.getItem('calculator_theme') || 'light';
+setTheme(savedTheme);
+
 /* ---------- MODE SWITCHING ---------- */
 const modeButtons = document.querySelectorAll('.mode-btn');
 const panels = {
