@@ -4,14 +4,14 @@ A comprehensive, multi-mode calculator application available in both **HTML/Java
 
 ## 📋 Features Overview
 
-### 🌐 **Web Version** (`advanced-calculator.html`)
+### 🌐 **Web Version** (`my-calculator-all-in-one.html`)
 - Beautiful responsive design with gradient UI
 - Runs in any modern web browser
 - No installation required
 - Real-time calculations
 - Mobile-friendly interface
 
-### 🖥️ **Python Version** (`calculator.py`)
+### 🖥️ **Python Version** (`my-calculator_python_version.py`)
 - Desktop GUI application using Tkinter
 - Advanced numerical computing with SciPy
 - Professional scientific interface
