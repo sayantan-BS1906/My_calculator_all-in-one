@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All-in-One Advanced Calculator</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .calculator {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    padding: 24px;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 14px;
+  }
+
+  .modes {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .mode-btn {
+    flex: 1;
+    min-width: 70px;
+    padding: 8px 4px;
+    border: none;
+    border-radius: 8px;
+    background: #eee;
+    color: #333;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .mode-btn.active { background: #667eea; color: white; }
+
+  .display {
+    background: #1e1e2f;
+    color: #fff;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 14px;
+    text-align: right;
+  }
+
+  #expression { font-size: 0.9rem; color: #aaa; min-height: 18px; word-break: break-all; }
+  #result { font-size: 2rem; font-weight: bold; word-break: break-all; }
+
+  .angle-toggle {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+    justify-content: flex-end;
+  }
+
+  .angle-toggle button {
+    padding: 4px 10px;
+    font-size: 0.7rem;
+    border: 1px solid #ccc;
+    background: #f5f5f5;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .angle-toggle button.active { background: #333; color: white; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .grid button {
+    padding: 14px 0;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.08s, filter 0.15s;
+  }
+
+  .grid button:active { transform: scale(0.94); }
+
+  .num { background: #f1f1f4; color: #222; }
+  .op { background: #a78bfa; color: white; }
+  .sci { background: #60a5fa; color: white; font-size: 0.8rem; }
+  .comm { background: #f87171; color: white; font-size: 0.75rem; }
+  .calc { background: #34d399; color: white; font-size: 0.75rem; }
+  .eq { background: #22c55e; color: white; }
+  .clear { background: #ef4444; color: white; }
+  .del { background: #f97316; color: white; }
+  .paren { background: #fbbf24; color: #222; }
+  .mem { background: #94a3b8; color: white; font-size: 0.75rem; }
+
+  .grid button:hover { filter: brightness(1.08); }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .commercial-form, .calculus-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .commercial-form input, .calculus-form input, .commercial-form select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 0.9rem;
+  }
+
+  .commercial-form button, .calculus-form button {
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #667eea;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .commercial-form label, .calculus-form label {
+    font-size: 0.8rem;
+    color: #555;
+    margin-bottom: -4px;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 14px;
+    font-size: 0.7rem;
+    color: #888;
+  }
+</style>
+</head>
+<body>
+
+<div class="calculator">
+  <h1>🧮 All-in-One Advanced Calculator</h1>
+
+  <div class="modes">
+    <button class="mode-btn active" data-mode="basic">Basic</button>
+    <button class="mode-btn" data-mode="scientific">Scientific</button>
+    <button class="mode-btn" data-mode="commercial">Commercial</button>
+    <button class="mode-btn" data-mode="calculus">Calculus</button>
+  </div>
+
+  <!-- BASIC + SCIENTIFIC share the same display -->
+  <div id="calc-display-wrapper">
+    <div class="display">
+      <div id="expression"></div>
+      <div id="result">0</div>
+    </div>
+
+    <div class="angle-toggle" id="angleToggle" style="display:none;">
+      <button data-angle="DEG" class="active">DEG</button>
+      <button data-angle="RAD">RAD</button>
+      <button data-angle="GRAD">GRAD</button>
+    </div>
+  </div>
+
+  <!-- BASIC MODE -->
+  <div class="panel active" id="panel-basic">
+    <div class="grid">
+      <button class="mem" data-action="mc">MC</button>
+      <button class="mem" data-action="mplus">M+</button>
+      <button class="mem" data-action="mminus">M−</button>
+      <button class="mem" data-action="mr">MR</button>
+
+      <button class="clear" data-action="clear">C</button>
+      <button class="paren" data-val="(">(</button>
+      <button class="paren" data-val=")">)</button>
+      <button class="del" data-action="del">DEL</button>
+
+      <button class="num" data-val="7">7</button>
+      <button class="num" data-val="8">8</button>
+      <button class="num" data-val="9">9</button>
+      <button class="op" data-val="/">÷</button>
+
+      <button class="num" data-val="4">4</button>
+      <button class="num" data-val="5">5</button>
+      <button class="num" data-val="6">6</button>
+      <button class="op" data-val="*">×</button>
+
+      <button class="num" data-val="1">1</button>
+      <button class="num" data-val="2">2</button>
+      <button class="num" data-val="3">3</button>
+      <button class="op" data-val="-">−</button>
+
+      <button class="num" data-val="0">0</button>
+      <button class="num" data-val=".">.</button>
+      <button class="eq" data-action="equals">=</button>
+      <button class="op" data-val="+">+</button>
+
+      <button class="op" data-val="%" style="grid-column: span 4;">%</button>
+    </div>
+  </div>
+
+  <!-- SCIENTIFIC MODE -->
+  <div class="panel" id="panel-scientific">
+    <div class="grid">
+      <button class="sci" data-val="sin(">sin</button>
+      <button class="sci" data-val="cos(">cos</button>
+      <button class="sci" data-val="tan(">tan</button>
+      <button class="sci" data-val="asin(">asin</button>
+
+      <button class="sci" data-val="acos(">acos</button>
+      <button class="sci" data-val="atan(">atan</button>
+      <button class="sci" data-val="sinh(">sinh</button>
+      <button class="sci" data-val="cosh(">cosh</button>
+
+      <button class="sci" data-val="tanh(">tanh</button>
+      <button class="sci" data-val="ln(">ln</button>
+      <button class="sci" data-val="log(">log</button>
+      <button class="sci" data-val="sqrt(">√</button>
+
+      <button class="sci" data-val="cbrt(">∛</button>
+      <button class="sci" data-val="^2">x²</button>
+      <button class="sci" data-val="^3">x³</button>
+      <button class="sci" data-val="^">x^y</button>
+
+      <button class="sci" data-val="!">n!</button>
+      <button class="sci" data-val="abs(">|x|</button>
+      <button class="sci" data-val="1/(">1/x</button>
+      <button class="sci" data-val="exp(">eˣ</button>
+
+      <button class="sci" data-val="pi">π</button>
+      <button class="sci" data-val="e">e</button>
+      <button class="clear" data-action="clear">C</button>
+      <button class="del" data-action="del">DEL</button>
+
+      <button class="num" data-val="7">7</button>
+      <button class="num" data-val="8">8</button>
+      <button class="num" data-val="9">9</button>
+      <button class="op" data-val="/">÷</button>
+
+      <button class="num" data-val="4">4</button>
+      <button class="num" data-val="5">5</button>
+      <button class="num" data-val="6">6</button>
+      <button class="op" data-val="*">×</button>
+
+      <button class="num" data-val="1">1</button>
+      <button class="num" data-val="2">2</button>
+      <button class="num" data-val="3">3</button>
+      <button class="op" data-val="-">−</button>
+
+      <button class="num" data-val="0">0</button>
+      <button class="num" data-val=".">.</button>
+      <button class="eq" data-action="equals">=</button>
+      <button class="op" data-val="+">+</button>
+    </div>
+  </div>
+
+  <!-- COMMERCIAL MODE -->
+  <div class="panel" id="panel-commercial">
+    <select id="commercialType" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;">
+      <option value="discount">Discount Calculator</option>
+      <option value="profitloss">Profit / Loss Analyzer</option>
+      <option value="interest">Interest Calculator</option>
+      <option value="markup">Mark-up Calculator</option>
+      <option value="pctchange">Percentage Change</option>
+    </select>
+    <div class="commercial-form" id="commercialForm"></div>
+    <div class="display"><div id="commercialResult">Result: —</div></div>
+  </div>
+
+  <!-- CALCULUS MODE -->
+  <div class="panel" id="panel-calculus">
+    <select id="calculusType" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;">
+      <option value="integral">Numerical Integration (Trapezoidal)</option>
+      <option value="simpson">Simpson's Rule</option>
+      <option value="derivative">Numerical Derivative</option>
+      <option value="series">Series Summation (∑)</option>
+    </select>
+    <div class="calculus-form" id="calculusForm"></div>
+    <div class="display"><div id="calculusResult">Result: —</div></div>
+  </div>
+
+  <footer>All-in-One Calculator · Runs entirely in your browser</footer>
+</div>
+
+<script>
+/* ---------- MODE SWITCHING ---------- */
+const modeButtons = document.querySelectorAll('.mode-btn');
+const panels = { basic: document.getElementById('panel-basic'), scientific: document.getElementById('panel-scientific'), commercial: document.getElementById('panel-commercial'), calculus: document.getElementById('panel-calculus') };
+const calcDisplayWrapper = document.getElementById('calc-display-wrapper');
+const angleToggle = document.getElementById('angleToggle');
+
+modeButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    modeButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    Object.values(panels).forEach(p => p.classList.remove('active'));
+    const mode = btn.dataset.mode;
+    panels[mode].classList.add('active');
+
+    calcDisplayWrapper.style.display = (mode === 'basic' || mode === 'scientific') ? 'block' : 'none';
+    angleToggle.style.display = (mode === 'scientific') ? 'flex' : 'none';
+  });
+});
+
+/* ---------- BASIC + SCIENTIFIC CALCULATOR ---------- */
+let expr = '';
+let angleMode = 'DEG';
+let memory = 0;
+
+const exprEl = document.getElementById('expression');
+const resultEl = document.getElementById('result');
+
+document.getElementById('angleToggle').addEventListener('click', (e) => {
+  if (e.target.dataset.angle) {
+    angleMode = e.target.dataset.angle;
+    document.querySelectorAll('#angleToggle button').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+  }
+});
+
+function toRadians(val, mode) {
+  if (mode === 'DEG') return val * Math.PI / 180;
+  if (mode === 'GRAD') return val * Math.PI / 200;
+  return val;
+}
+
+function factorial(n) {
+  if (n < 0 || !Number.isInteger(n)) return NaN;
+  let r = 1;
+  for (let i = 2; i <= n; i++) r *= i;
+  return r;
+}
+
+function safeEvaluate(rawExpr) {
+  let e = rawExpr
+    .replace(/\^/g, '**')
+    .replace(/pi/g, 'Math.PI')
+    .replace(/(?<![a-zA-Z])e(?![a-zA-Z(])/g, 'Math.E')
+    .replace(/sqrt\(/g, 'Math.sqrt(')
+    .replace(/cbrt\(/g, 'Math.cbrt(')
+    .replace(/abs\(/g, 'Math.abs(')
+    .replace(/exp\(/g, 'Math.exp(')
+    .replace(/asin\(/g, '__asin(')
+    .replace(/acos\(/g, '__acos(')
+    .replace(/atan\(/g, '__atan(')
+    .replace(/sinh\(/g, 'Math.sinh(')
+    .replace(/cosh\(/g, 'Math.cosh(')
+    .replace(/tanh\(/g, 'Math.tanh(')
+    .replace(/sin\(/g, '__sin(')
+    .replace(/cos\(/g, '__cos(')
+    .replace(/tan\(/g, '__tan(')
+    .replace(/ln\(/g, 'Math.log(')
+    .replace(/log\(/g, 'Math.log10(')
+    .replace(/(\d+)!/g, '__fact($1)');
+
+  const __sin = x => Math.sin(toRadians(x, angleMode));
+  const __cos = x => Math.cos(toRadians(x, angleMode));
+  const __tan = x => Math.tan(toRadians(x, angleMode));
+  const __asin = x => angleMode === 'DEG' ? Math.asin(x) * 180 / Math.PI : angleMode === 'GRAD' ? Math.asin(x) * 200 / Math.PI : Math.asin(x);
+  const __acos = x => angleMode === 'DEG' ? Math.acos(x) * 180 / Math.PI : angleMode === 'GRAD' ? Math.acos(x) * 200 / Math.PI : Math.acos(x);
+  const __atan = x => angleMode === 'DEG' ? Math.atan(x) * 180 / Math.PI : angleMode === 'GRAD' ? Math.atan(x) * 200 / Math.PI : Math.atan(x);
+  const __fact = factorial;
+
+  // eslint-disable-next-line no-new-func
+  return Function('__sin','__cos','__tan','__asin','__acos','__atan','__fact',
+    `"use strict"; return (${e});`)(__sin, __cos, __tan, __asin, __acos, __atan, __fact);
+}
+
+document.querySelectorAll('#panel-basic .grid button, #panel-scientific .grid button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const val = btn.dataset.val;
+    const action = btn.dataset.action;
+
+    if (val !== undefined) {
+      expr += val;
+      exprEl.textContent = expr;
+      return;
+    }
+
+    switch (action) {
+      case 'clear':
+        expr = '';
+        exprEl.textContent = '';
+        resultEl.textContent = '0';
+        break;
+      case 'del':
+        expr = expr.slice(0, -1);
+        exprEl.textContent = expr;
+        break;
+      case 'equals':
+        try {
+          const val = safeEvaluate(expr);
+          resultEl.textContent = Number.isFinite(val) ? +val.toFixed(10) : 'Error';
+          exprEl.textContent = expr;
+          expr = String(resultEl.textContent);
+        } catch {
+          resultEl.textContent = 'Error';
+        }
+        break;
+      case 'mc': memory = 0; break;
+      case 'mplus': memory += parseFloat(resultEl.textContent) || 0; break;
+      case 'mminus': memory -= parseFloat(resultEl.textContent) || 0; break;
+      case 'mr':
+        expr += memory;
+        exprEl.textContent = expr;
+        break;
+    }
+  });
+});
+
+/* ---------- COMMERCIAL MODE ---------- */
+const commercialForms = {
+  discount: {
+    fields: [['Price', 'price'], ['Discount %', 'discount']],
+    calc: v => {
+      const final = v.price - (v.price * v.discount / 100);
+      return `Discount Amount: ${(v.price - final).toFixed(2)} | Final Price: ${final.toFixed(2)}`;
+    }
+  },
+  profitloss: {
+    fields: [['Cost Price', 'cost'], ['Selling Price', 'selling']],
+    calc: v => {
+      const diff = v.selling - v.cost;
+      const pct = (diff / v.cost) * 100;
+      return diff >= 0
+        ? `Profit: ${diff.toFixed(2)} (${pct.toFixed(2)}%)`
+        : `Loss: ${Math.abs(diff).toFixed(2)} (${pct.toFixed(2)}%)`;
+    }
+  },
+  interest: {
+    fields: [['Principal', 'p'], ['Rate %', 'r'], ['Time (years)', 't'], ['Compound Frequency (0 = simple)', 'n']],
+    calc: v => {
+      const si = (v.p * v.r * v.t) / 100;
+      if (!v.n || v.n === 0) return `Simple Interest: ${si.toFixed(2)} | Total: ${(v.p + si).toFixed(2)}`;
+      const amount = v.p * Math.pow(1 + v.r / (100 * v.n), v.n * v.t);
+      return `Compound Interest: ${(amount - v.p).toFixed(2)} | Total: ${amount.toFixed(2)}`;
+    }
+  },
+  markup: {
+    fields: [['Cost', 'cost'], ['Mark-up %', 'markup']],
+    calc: v => `Selling Price: ${(v.cost + (v.cost * v.markup / 100)).toFixed(2)}`
+  },
+  pctchange: {
+    fields: [['Old Value', 'oldv'], ['New Value', 'newv']],
+    calc: v => {
+      const pct = ((v.newv - v.oldv) / v.oldv) * 100;
+      return `${pct >= 0 ? 'Increase' : 'Decrease'}: ${Math.abs(pct).toFixed(2)}%`;
+    }
+  }
+};
+
+function renderCommercialForm() {
+  const type = document.getElementById('commercialType').value;
+  const form = document.getElementById('commercialForm');
+  const cfg = commercialForms[type];
+  form.innerHTML = cfg.fields.map(([label, id]) =>
+    `<label>${label}</label><input type="number" step="any" id="c_${id}" placeholder="${label}">`
+  ).join('') + `<button id="commercialCalc">Calculate</button>`;
+
+  document.getElementById('commercialCalc').addEventListener('click', () => {
+    const values = {};
+    let ok = true;
+    cfg.fields.forEach(([, id]) => {
+      const raw = document.getElementById(`c_${id}`).value;
+      values[id] = parseFloat(raw);
+      if (raw !== '' && isNaN(values[id])) ok = false;
+    });
+    document.getElementById('commercialResult').textContent = ok ? cfg.calc(values) : 'Enter valid numbers';
+  });
+}
+document.getElementById('commercialType').addEventListener('change', renderCommercialForm);
+renderCommercialForm();
+
+/* ---------- CALCULUS MODE ---------- */
+function parseFn(fnStr) {
+  const cleaned = fnStr.replace(/\^/g, '**');
+  return (x) => Function('x', `"use strict"; return (${cleaned});`)(x);
+}
+
+const calculusForms = {
+  integral: {
+    fields: [['f(x) — e.g. x^2', 'fn', 'text'], ['a', 'a', 'number'], ['b', 'b', 'number'], ['Intervals (n)', 'n', 'number']],
+    calc: v => {
+      const f = parseFn(v.fn);
+      const n = v.n || 1000;
+      const h = (v.b - v.a) / n;
+      let sum = (f(v.a) + f(v.b)) / 2;
+      for (let i = 1; i < n; i++) sum += f(v.a + i * h);
+      return `∫ ≈ ${(sum * h).toFixed(6)}`;
+    }
+  },
+  simpson: {
+    fields: [['f(x) — e.g. x^2', 'fn', 'text'], ['a', 'a', 'number'], ['b', 'b', 'number'], ['Intervals (even n)', 'n', 'number']],
+    calc: v => {
+      const f = parseFn(v.fn);
+      let n = v.n || 100;
+      if (n % 2 !== 0) n++;
+      const h = (v.b - v.a) / n;
+      let sum = f(v.a) + f(v.b);
+      for (let i = 1; i < n; i++) sum += f(v.a + i * h) * (i % 2 === 0 ? 2 : 4);
+      return `∫ (Simpson) ≈ ${(sum * h / 3).toFixed(6)}`;
+    }
+  },
+  derivative: {
+    fields: [['f(x) — e.g. x^3', 'fn', 'text'], ['Point x', 'x', 'number'], ['h (small step)', 'h', 'number']],
+    calc: v => {
+      const f = parseFn(v.fn);
+      const h = v.h || 0.0001;
+      const d = (f(v.x + h) - f(v.x - h)) / (2 * h);
+      return `f'(x) ≈ ${d.toFixed(6)}`;
+    }
+  },
+  series: {
+    fields: [['Expression in i — e.g. i^2', 'fn', 'text'], ['Start', 'start', 'number'], ['End', 'end', 'number']],
+    calc: v => {
+      const cleaned = v.fn.replace(/\^/g, '**');
+      const f = Function('i', `"use strict"; return (${cleaned});`);
+      let sum = 0;
+      for (let i = v.start; i <= v.end; i++) sum += f(i);
+      return `∑ = ${sum.toFixed(6)}`;
+    }
+  }
+};
+
+function renderCalculusForm() {
+  const type = document.getElementById('calculusType').value;
+  const form = document.getElementById('calculusForm');
+  const cfg = calculusForms[type];
+  form.innerHTML = cfg.fields.map(([label, id, inputType]) =>
+    `<label>${label}</label><input type="${inputType}" ${inputType==='number' ? 'step="any"' : ''} id="k_${id}" placeholder="${label}">`
+  ).join('') + `<button id="calculusCalc">Calculate</button>`;
+
+  document.getElementById('calculusCalc').addEventListener('click', () => {
+    const values = {};
+    cfg.fields.forEach(([, id, inputType]) => {
+      const raw = document.getElementById(`k_${id}`).value;
+      values[id] = inputType === 'number' ? parseFloat(raw) : raw;
+    });
+    try {
+      document.getElementById('calculusResult').textContent = cfg.calc(values);
+    } catch {
+      document.getElementById('calculusResult').textContent = 'Error in expression';
+    }
+  });
+}
+document.getElementById('calculusType').addEventListener('change', renderCalculusForm);
+renderCalculusForm();
+</script>
+
+</body>
+</html>
