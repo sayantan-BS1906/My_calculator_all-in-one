@@ -168,6 +168,7 @@
     <button class="mode-btn" data-mode="scientific">Scientific</button>
     <button class="mode-btn" data-mode="commercial">Commercial</button>
     <button class="mode-btn" data-mode="calculus">Calculus</button>
+    <button class="mode-btn" data-mode="vector">Vectors</button>
   </div>
 
   <!-- BASIC + SCIENTIFIC share the same display -->
@@ -302,6 +303,37 @@
   </div>
 
   <footer>All-in-One Calculator · Runs entirely in your browser</footer>
+</div>
+ <!-- VECTOR MODE -->
+ <div id="vectorTab" class="tab-content" style="display:none;">
+  <h3>3D Vector Operations</h3>
+  
+  <div class="vector-inputs">
+    <div class="vector-group">
+      <h4>Vector A</h4>
+      <label>X: <input type="number" id="vAx" value="1" step="any"></label>
+      <label>Y: <input type="number" id="vAy" value="2" step="any"></label>
+      <label>Z: <input type="number" id="vAz" value="3" step="any"></label>
+    </div>
+
+    <div class="vector-group">
+      <h4>Vector B</h4>
+      <label>X: <input type="number" id="vBx" value="4" step="any"></label>
+      <label>Y: <input type="number" id="vBy" value="5" step="any"></label>
+      <label>Z: <input type="number" id="vBz" value="6" step="any"></label>
+    </div>
+  </div>
+
+  <div class="vector-actions">
+    <button onclick="calculateVector('add')">A + B</button>
+    <button onclick="calculateVector('subtract')">A - B</button>
+    <button onclick="calculateVector('dot')">Dot Product (A · B)</button>
+    <button onclick="calculateVector('cross')">Cross Product (A × B)</button>
+    <button onclick="calculateVector('magnitude')">Magnitudes (|A|, |B|)</button>
+    <button onclick="calculateVector('angle')">Angle Between (θ)</button>
+  </div>
+
+  <div id="vectorResult" class="result-box"></div>
 </div>
 
 <script>
