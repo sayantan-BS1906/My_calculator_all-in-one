@@ -23,7 +23,7 @@
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     padding: 24px;
     width: 100%;
-    max-width: 420px;
+    max-width: 440px;
   }
 
   h1 {
@@ -42,7 +42,7 @@
 
   .mode-btn {
     flex: 1;
-    min-width: 70px;
+    min-width: 65px;
     padding: 8px 4px;
     border: none;
     border-radius: 8px;
@@ -120,21 +120,21 @@
   .panel { display: none; }
   .panel.active { display: block; }
 
-  .commercial-form, .calculus-form {
+  .commercial-form, .calculus-form, .vector-form {
     display: flex;
     flex-direction: column;
     gap: 8px;
     margin-bottom: 10px;
   }
 
-  .commercial-form input, .calculus-form input, .commercial-form select {
+  .commercial-form input, .calculus-form input, .vector-form input, .commercial-form select, .calculus-form select {
     padding: 10px;
     border-radius: 8px;
     border: 1px solid #ddd;
     font-size: 0.9rem;
   }
 
-  .commercial-form button, .calculus-form button {
+  .commercial-form button, .calculus-form button, .vector-grid-actions button {
     padding: 10px;
     border: none;
     border-radius: 8px;
@@ -142,12 +142,30 @@
     color: white;
     font-weight: 600;
     cursor: pointer;
+    transition: filter 0.15s;
   }
 
-  .commercial-form label, .calculus-form label {
+  .vector-grid-actions button:hover, .commercial-form button:hover, .calculus-form button:hover {
+    filter: brightness(1.08);
+  }
+
+  .commercial-form label, .calculus-form label, .vector-form label {
     font-size: 0.8rem;
     color: #555;
     margin-bottom: -4px;
+  }
+
+  .vector-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .vector-grid-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 6px;
   }
 
   footer {
@@ -168,7 +186,7 @@
     <button class="mode-btn" data-mode="scientific">Scientific</button>
     <button class="mode-btn" data-mode="commercial">Commercial</button>
     <button class="mode-btn" data-mode="calculus">Calculus</button>
-    <button class="mode-btn" data-mode="vector">Vectors</button>
+    <button class="mode-btn" data-mode="vector">Vector</button>
   </div>
 
   <!-- BASIC + SCIENTIFIC share the same display -->
@@ -302,44 +320,48 @@
     <div class="display"><div id="calculusResult">Result: —</div></div>
   </div>
 
+  <!-- VECTOR MODE -->
+  <div class="panel" id="panel-vector">
+    <div class="vector-form">
+      <label>Vector A (x, y, z)</label>
+      <div class="vector-row">
+        <input type="number" id="vAx" placeholder="Ax" value="1" step="any">
+        <input type="number" id="vAy" placeholder="Ay" value="2" step="any">
+        <input type="number" id="vAz" placeholder="Az" value="3" step="any">
+      </div>
+
+      <label style="margin-top:6px;">Vector B (x, y, z)</label>
+      <div class="vector-row">
+        <input type="number" id="vBx" placeholder="Bx" value="4" step="any">
+        <input type="number" id="vBy" placeholder="By" value="5" step="any">
+        <input type="number" id="vBz" placeholder="Bz" value="6" step="any">
+      </div>
+
+      <div class="vector-grid-actions">
+        <button onclick="calculateVector('add')">A + B</button>
+        <button onclick="calculateVector('subtract')">A − B</button>
+        <button onclick="calculateVector('dot')">Dot Product (A · B)</button>
+        <button onclick="calculateVector('cross')">Cross Product (A × B)</button>
+        <button onclick="calculateVector('magnitude')">Magnitude (|A|, |B|)</button>
+        <button onclick="calculateVector('angle')">Angle Between (θ)</button>
+      </div>
+    </div>
+    <div class="display"><div id="vectorResult">Result: —</div></div>
+  </div>
+
   <footer>All-in-One Calculator · Runs entirely in your browser</footer>
-</div>
- <!-- VECTOR MODE -->
- <div id="vectorTab" class="tab-content" style="display:none;">
-  <h3>3D Vector Operations</h3>
-  
-  <div class="vector-inputs">
-    <div class="vector-group">
-      <h4>Vector A</h4>
-      <label>X: <input type="number" id="vAx" value="1" step="any"></label>
-      <label>Y: <input type="number" id="vAy" value="2" step="any"></label>
-      <label>Z: <input type="number" id="vAz" value="3" step="any"></label>
-    </div>
-
-    <div class="vector-group">
-      <h4>Vector B</h4>
-      <label>X: <input type="number" id="vBx" value="4" step="any"></label>
-      <label>Y: <input type="number" id="vBy" value="5" step="any"></label>
-      <label>Z: <input type="number" id="vBz" value="6" step="any"></label>
-    </div>
-  </div>
-
-  <div class="vector-actions">
-    <button onclick="calculateVector('add')">A + B</button>
-    <button onclick="calculateVector('subtract')">A - B</button>
-    <button onclick="calculateVector('dot')">Dot Product (A · B)</button>
-    <button onclick="calculateVector('cross')">Cross Product (A × B)</button>
-    <button onclick="calculateVector('magnitude')">Magnitudes (|A|, |B|)</button>
-    <button onclick="calculateVector('angle')">Angle Between (θ)</button>
-  </div>
-
-  <div id="vectorResult" class="result-box"></div>
 </div>
 
 <script>
 /* ---------- MODE SWITCHING ---------- */
 const modeButtons = document.querySelectorAll('.mode-btn');
-const panels = { basic: document.getElementById('panel-basic'), scientific: document.getElementById('panel-scientific'), commercial: document.getElementById('panel-commercial'), calculus: document.getElementById('panel-calculus') };
+const panels = {
+  basic: document.getElementById('panel-basic'),
+  scientific: document.getElementById('panel-scientific'),
+  commercial: document.getElementById('panel-commercial'),
+  calculus: document.getElementById('panel-calculus'),
+  vector: document.getElementById('panel-vector')
+};
 const calcDisplayWrapper = document.getElementById('calc-display-wrapper');
 const angleToggle = document.getElementById('angleToggle');
 
@@ -525,15 +547,37 @@ function renderCommercialForm() {
 document.getElementById('commercialType').addEventListener('change', renderCommercialForm);
 renderCommercialForm();
 
-/* ---------- CALCULUS MODE ---------- */
+/* ---------- CALCULUS MODE (FIXED EXP / LOG / TRIG PARSING) ---------- */
 function parseFn(fnStr) {
-  const cleaned = fnStr.replace(/\^/g, '**');
-  return (x) => Function('x', `"use strict"; return (${cleaned});`)(x);
+  let cleaned = fnStr
+    .replace(/\^/g, '**')
+    .replace(/\bpi\b/gi, 'Math.PI')
+    .replace(/(?<![a-zA-Z])e(?![a-zA-Z(])/g, 'Math.E')
+    .replace(/\bexp\(/gi, 'Math.exp(')
+    .replace(/\bln\(/gi, 'Math.log(')
+    .replace(/\blog\(/gi, 'Math.log10(')
+    .replace(/\bsqrt\(/gi, 'Math.sqrt(')
+    .replace(/\bcbrt\(/gi, 'Math.cbrt(')
+    .replace(/\babs\(/gi, 'Math.abs(')
+    .replace(/\bsin\(/gi, 'Math.sin(')
+    .replace(/\bcos\(/gi, 'Math.cos(')
+    .replace(/\btan\(/gi, 'Math.tan(')
+    .replace(/\basin\(/gi, 'Math.asin(')
+    .replace(/\bacos\(/gi, 'Math.acos(')
+    .replace(/\batan\(/gi, 'Math.atan(')
+    .replace(/\bsinh\(/gi, 'Math.sinh(')
+    .replace(/\bcosh\(/gi, 'Math.cosh(')
+    .replace(/\btanh\(/gi, 'Math.tanh(');
+
+  return (x) => {
+    // eslint-disable-next-line no-new-func
+    return Function('x', `"use strict"; return (${cleaned});`)(x);
+  };
 }
 
 const calculusForms = {
   integral: {
-    fields: [['f(x) — e.g. x^2', 'fn', 'text'], ['a', 'a', 'number'], ['b', 'b', 'number'], ['Intervals (n)', 'n', 'number']],
+    fields: [['f(x) — e.g. exp(x), log(x), x^2', 'fn', 'text'], ['a', 'a', 'number'], ['b', 'b', 'number'], ['Intervals (n)', 'n', 'number']],
     calc: v => {
       const f = parseFn(v.fn);
       const n = v.n || 1000;
@@ -544,7 +588,7 @@ const calculusForms = {
     }
   },
   simpson: {
-    fields: [['f(x) — e.g. x^2', 'fn', 'text'], ['a', 'a', 'number'], ['b', 'b', 'number'], ['Intervals (even n)', 'n', 'number']],
+    fields: [['f(x) — e.g. exp(x), log(x), x^2', 'fn', 'text'], ['a', 'a', 'number'], ['b', 'b', 'number'], ['Intervals (even n)', 'n', 'number']],
     calc: v => {
       const f = parseFn(v.fn);
       let n = v.n || 100;
@@ -556,7 +600,7 @@ const calculusForms = {
     }
   },
   derivative: {
-    fields: [['f(x) — e.g. x^3', 'fn', 'text'], ['Point x', 'x', 'number'], ['h (small step)', 'h', 'number']],
+    fields: [['f(x) — e.g. exp(x), log(x), x^3', 'fn', 'text'], ['Point x', 'x', 'number'], ['h (small step)', 'h', 'number']],
     calc: v => {
       const f = parseFn(v.fn);
       const h = v.h || 0.0001;
@@ -565,9 +609,17 @@ const calculusForms = {
     }
   },
   series: {
-    fields: [['Expression in i — e.g. i^2', 'fn', 'text'], ['Start', 'start', 'number'], ['End', 'end', 'number']],
+    fields: [['Expression in i — e.g. exp(i), i^2', 'fn', 'text'], ['Start', 'start', 'number'], ['End', 'end', 'number']],
     calc: v => {
-      const cleaned = v.fn.replace(/\^/g, '**');
+      let cleaned = v.fn
+        .replace(/\^/g, '**')
+        .replace(/\bpi\b/gi, 'Math.PI')
+        .replace(/(?<![a-zA-Z])e(?![a-zA-Z(])/g, 'Math.E')
+        .replace(/\bexp\(/gi, 'Math.exp(')
+        .replace(/\bln\(/gi, 'Math.log(')
+        .replace(/\blog\(/gi, 'Math.log10(')
+        .replace(/\bsqrt\(/gi, 'Math.sqrt(');
+
       const f = Function('i', `"use strict"; return (${cleaned});`);
       let sum = 0;
       for (let i = v.start; i <= v.end; i++) sum += f(i);
@@ -599,6 +651,68 @@ function renderCalculusForm() {
 }
 document.getElementById('calculusType').addEventListener('change', renderCalculusForm);
 renderCalculusForm();
+
+/* ---------- VECTOR MODE ---------- */
+function calculateVector(operation) {
+  const ax = parseFloat(document.getElementById('vAx').value) || 0;
+  const ay = parseFloat(document.getElementById('vAy').value) || 0;
+  const az = parseFloat(document.getElementById('vAz').value) || 0;
+
+  const bx = parseFloat(document.getElementById('vBx').value) || 0;
+  const by = parseFloat(document.getElementById('vBy').value) || 0;
+  const bz = parseFloat(document.getElementById('vBz').value) || 0;
+
+  const resultDiv = document.getElementById('vectorResult');
+
+  switch (operation) {
+    case 'add': {
+      const rx = +(ax + bx).toFixed(6);
+      const ry = +(ay + by).toFixed(6);
+      const rz = +(az + bz).toFixed(6);
+      resultDiv.innerHTML = `A + B = (${rx}, ${ry}, ${rz})`;
+      break;
+    }
+    case 'subtract': {
+      const rx = +(ax - bx).toFixed(6);
+      const ry = +(ay - by).toFixed(6);
+      const rz = +(az - bz).toFixed(6);
+      resultDiv.innerHTML = `A − B = (${rx}, ${ry}, ${rz})`;
+      break;
+    }
+    case 'dot': {
+      const dot = +(ax * bx + ay * by + az * bz).toFixed(6);
+      resultDiv.innerHTML = `A · B = ${dot}`;
+      break;
+    }
+    case 'cross': {
+      const cx = +(ay * bz - az * by).toFixed(6);
+      const cy = +(az * bx - ax * bz).toFixed(6);
+      const cz = +(ax * by - ay * bx).toFixed(6);
+      resultDiv.innerHTML = `A × B = (${cx}, ${cy}, ${cz})`;
+      break;
+    }
+    case 'magnitude': {
+      const magA = Math.sqrt(ax * ax + ay * ay + az * az).toFixed(6);
+      const magB = Math.sqrt(bx * bx + by * by + bz * bz).toFixed(6);
+      resultDiv.innerHTML = `|A| = ${+magA} | |B| = ${+magB}`;
+      break;
+    }
+    case 'angle': {
+      const dot = ax * bx + ay * by + az * bz;
+      const magA = Math.sqrt(ax * ax + ay * ay + az * az);
+      const magB = Math.sqrt(bx * bx + by * by + bz * bz);
+      if (magA === 0 || magB === 0) {
+        resultDiv.innerHTML = 'Angle: Undefined (zero vector)';
+      } else {
+        const cosTheta = Math.max(-1, Math.min(1, dot / (magA * magB)));
+        const rad = Math.acos(cosTheta);
+        const deg = ((rad * 180) / Math.PI).toFixed(4);
+        resultDiv.innerHTML = `θ = ${+deg}° (${+rad.toFixed(6)} rad)`;
+      }
+      break;
+    }
+  }
+}
 </script>
 
 </body>
