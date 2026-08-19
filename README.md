@@ -116,7 +116,7 @@ A comprehensive, multi-mode calculator application available in both **HTML/Java
 ### **Web Version**
 
 1. **Online (Vercel Deployment)**
-   - Visit: https://my-calculator-all-in-one.vercel.app
+   - Visit: https://my-calculator-all-in-one.netlify.app
    - No installation needed!
 
 2. **Local Browser**
